@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CBO体験ラボ | CBO育成講座 18期 DAY1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;min-width:0}
+html{scroll-behavior:smooth}
+body{margin:0;background:#F6F2EA;color:#1F1B16;font:16px/1.6 'Noto Sans JP',system-ui,sans-serif}
+a{color:#1F1B16}a:hover{color:#BE3A21}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid #BE3A21;outline-offset:2px}
+.wrap{max-width:1392px;margin:0 auto;padding:0 24px}
+.lbl{font-size:12px;font-weight:700;letter-spacing:.12em;color:#5E564C}
+.muted{color:#5E564C}
+/* intro */
+.title-img{display:block;width:100%;max-width:1000px;height:auto}
+.day{display:flex;flex-direction:column;gap:12px;border-top:2px solid #1F1B16;padding-top:14px;margin-top:20px}
+.day-row{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+.tt{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));border-top:1px solid #D6CCBB}
+.tt div{display:flex;flex-direction:column;padding:8px 12px 8px 0;border-bottom:1px solid #D6CCBB}
+.tt b{font-size:15px;font-weight:900}.tt span{font-size:13px}
+.linkbtn{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:1px solid #1F1B16;background:#fff;font-size:14px;font-weight:700;text-decoration:none;margin-left:auto}
+/* summary */
+.sum{margin-top:24px;padding:20px 24px;border:1px solid #1F1B16;background:#F6F2EA}
+.sum.done{border:3px solid #1F1B16;background:#fff}
+.sum-top{display:flex;align-items:flex-end;gap:24px;flex-wrap:wrap}
+.big{font-size:64px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+.bar{height:10px;background:#D6CCBB}.bar i{display:block;height:100%;background:#1F1B16}
+.chips{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-top:16px}
+.chip{text-decoration:none;display:flex;flex-direction:column;gap:4px;padding:10px;border:1px solid #D6CCBB;background:#F6F2EA}
+.chip.ok{border:2px solid #1F1B16;background:#fff}
+.chip b{font-size:12px;line-height:1.3}.chip strong{font-size:22px;font-weight:900}
+.chip .mini{height:4px;background:#D6CCBB}.chip .mini i{display:block;height:4px;background:#1F1B16}
+.chip small{font-size:11px;color:#5E564C}
+/* stage */
+.stage{display:flex;flex-wrap:wrap;gap:0 24px;align-items:stretch}
+.rail{flex:0 1 200px;display:flex;gap:12px;background:#ECE5D8;padding:16px 14px 0}
+.railcol{display:flex;flex-direction:column;align-items:center;width:28px}
+.node{width:28px;height:28px;flex:none;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700}
+.node.done{background:#1F1B16;color:#F6F2EA}
+.node.now{border:3px solid #1F1B16;background:#F6F2EA;outline:4px solid #D6CCBB;font-size:12px;font-weight:900}
+.node.next{border:2px dashed #5E564C}
+.track{flex:1;width:8px;margin-top:8px;position:relative;overflow:hidden;background:#D6CCBB}
+.track.next{background:#E3DACB}
+.track i{position:absolute;left:0;top:0;width:100%;height:0;background:#1F1B16;transition:height .2s linear}
+.track.next i{background:#8C8478}
+.railtxt{display:flex;flex-direction:column;gap:4px;padding-bottom:24px}
+.sname{font-size:24px;font-weight:900;line-height:1.3}
+.sname span{padding:0 4px;margin-left:-4px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.tag{align-self:flex-start;font-size:13px;font-weight:700}
+.tag.now{font-size:12px;letter-spacing:.12em;background:#1F1B16;color:#F6F2EA;padding:3px 8px}
+.tag.next{font-weight:500;color:#5E564C}
+.rate{font-size:44px;font-weight:900;line-height:1.1;font-variant-numeric:tabular-nums}
+.center{flex:999 1 480px;min-width:0;display:flex;flex-direction:column;padding:16px 0 32px}
+.tabs{display:flex;gap:6px}
+.tab{min-height:40px;padding:0 18px;font-weight:700;font-size:14px;background:#F6F2EA;border:1px solid #1F1B16;border-bottom:0}
+.tab[aria-selected=true]{background:#1F1B16;color:#F6F2EA}
+.slide{min-height:340px;padding:20px 24px;display:flex;flex-direction:column;gap:14px}
+.slide.done{border:1px solid #1F1B16;background:#F6F2EA}
+.slide.now{border:2px solid #1F1B16;background:#fff}
+.slide.next{border:1px dashed #5E564C;background:#F6F2EA}
+.slide-h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.slide-h span:last-child{font-size:20px;line-height:1.3;font-weight:900}
+.slide img{width:100%;height:auto;border:1px solid #D6CCBB;background:#fff;display:block}
+.foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border-top:1px solid #D6CCBB;padding-top:10px}
+.dark{min-height:44px;padding:0 18px;border:0;background:#1F1B16;color:#F6F2EA;font-weight:700;font-size:14px}
+.light{min-height:44px;padding:0 16px;border:1px solid #1F1B16;background:#fff;font-weight:700;font-size:14px}
+fieldset{border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+legend{font-size:13px;font-weight:700;width:100%;padding:0 0 4px;border-bottom:2px solid #1F1B16}
+legend.dk{background:#1F1B16;color:#F6F2EA;padding:6px 10px;border:0}
+.fgrid{display:grid;gap:8px}
+.fld{display:flex;flex-direction:column;gap:4px;height:100%}
+.fld span{font-size:11px;font-weight:700;line-height:1.4;min-height:2.8em}
+.fld textarea{width:100%;margin-top:auto;resize:vertical;border:1px solid #B0A797;border-radius:2px;background:#F6F2EA;padding:6px 8px;font:400 13px/1.5 'Noto Sans JP',sans-serif;color:#1F1B16}
+.fld textarea.filled{border-color:#1F1B16;background:#fff}
+.rows{border-top:1px solid #D6CCBB}
+.rows div{display:grid;grid-template-columns:minmax(0,200px) minmax(0,1fr);gap:12px;padding:8px 0;border-bottom:1px solid #D6CCBB;font-size:14px}
+.rows div span:first-child{color:#5E564C;font-size:13px}
+.next-do{margin-top:12px;border:2px solid #1F1B16;background:#fff;padding:14px 16px}
+.info{flex:1 1 240px;max-width:280px;padding:16px;margin:16px 0 32px;display:flex;flex-direction:column;align-self:flex-start;background:#fff}
+.info.done{border:1px solid #D6CCBB}.info.now{border:2px solid #1F1B16}.info.next{border:1px dashed #B0A797}
+.info>div{display:flex;flex-direction:column;gap:4px;padding:10px 0;border-bottom:1px solid #D6CCBB;font-size:14px;line-height:1.7}
+.info>div:first-child{padding-top:0}.info>div:last-child{border:0}
+.info small{font-size:12px;font-weight:700;color:#5E564C}
+.todo{display:flex;gap:8px;align-items:flex-start}
+.todo i{width:16px;height:16px;flex:none;margin-top:5px;border:1px solid #5E564C}
+.pre{white-space:pre-line}
+/* submit + sheet */
+.submit{display:flex;flex-wrap:wrap;border:2px solid #1F1B16;background:#ECE5D8;margin-top:8px}
+.submit .l{flex:0 1 220px;padding:20px 24px;border-right:1px solid #1F1B16;display:flex;flex-direction:column}
+.submit .r{flex:999 1 400px;padding:20px 24px;display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap}
+.subbtn{min-height:56px;min-width:200px;padding:0 32px;border:0;background:#1F1B16;color:#F6F2EA;font-size:20px;font-weight:900;letter-spacing:.1em}
+.sheet{margin-top:32px;background:#fff;border:1px solid #1F1B16;padding:40px 48px;display:flex;flex-direction:column;gap:24px}
+.keys{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));border-top:1px solid #1F1B16;border-left:1px solid #1F1B16}
+.keys div{border-right:1px solid #1F1B16;border-bottom:1px solid #1F1B16;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-height:96px}
+.keys small{font-size:12px;font-weight:700;color:#5E564C}
+.keys .s{font-family:'Noto Serif JP',serif;font-size:18px;font-weight:700;line-height:1.6}
+.keys .e{font-size:14px;color:#B0A797}
+.parts{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px 32px}
+.part{display:flex;flex-direction:column;gap:6px;border-top:2px solid #1F1B16;padding-top:10px}
+.part .r{display:grid;grid-template-columns:minmax(0,130px) minmax(0,1fr);gap:10px;font-size:13px;line-height:1.6;border-bottom:1px solid #ECE5D8;padding-bottom:4px}
+footer{border-top:1px solid #D6CCBB;margin-top:48px}
+@media(max-width:600px){.sheet{padding:24px 18px}.big{font-size:48px}.info{max-width:none}.wrap{padding:0 16px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.track i{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap" style="padding-top:48px">
+  <h1 style="margin:0"><img class="title-img" src="img/title.png" alt="18期.日本初のCBO育成講座 CBO(CHIEF BRANDING OFFICER)"></h1>
+  <div class="day">
+    <div class="day-row">
+      <span style="font-size:28px;font-weight:900">【DAY1】</span>
+      <span style="font-size:18px;font-weight:700">Aコース 11.14(土) / Bコース 11.21(土)</span>
+      <span style="font-size:18px;font-weight:700">AM9:00 – PM16:00</span>
+      <span class="muted" style="font-size:14px">オフライン+オンライン · 3H×2</span>
+      <a class="linkbtn" href="https://docs.google.com/presentation/d/1cxkX_F-OEHernR2hRj-3C2KPQ2OuHxM8hNcpl3vr4mM/edit?usp=sharing" target="_blank" rel="noopener">講座資料(Googleスライド)を開く ↗</a>
+    </div>
+    <div class="tt" aria-label="DAY1のタイムテーブル">
+      <div><b>9:00</b><span>自己紹介/そもそも</span></div><div><b>9:15</b><span>CBOについて</span></div><div><b>9:30</b><span>プチ原体験ワーク</span></div><div><b>9:50</b><span>シェア/質疑応答</span></div><div><b>10:30</b><span>原体験ワーク</span></div><div><b>11:30</b><span>シェア/他己紹介/質疑応答</span></div><div class="muted"><b>12:30</b><span>ランチ(近くのお店)</span></div><div><b>13:30</b><span>個人と法人について / ブランド戦略MAP</span></div><div><b>14:30</b><span>追加ワーク</span></div><div><b>15:30</b><span>シェア</span></div><div><b>16:00</b><span>終了</span></div>
+    </div>
+  </div>
+  <p class="muted" style="font-size:13px;border-top:1px solid #D6CCBB;padding-top:12px;margin:20px 0 0">各段階のスライドは「イメージ」で見本を見て、「記入シート」で書き、「保存」で確かめます。書いた内容は、このブラウザの中にだけ保存されます。</p>
+</div>
+<div class="wrap" style="padding-bottom:64px">
+  <section id="sum" class="sum" aria-label="提出率"></section>
+  <span id="progLbl" class="lbl" style="display:block;padding:16px 0 8px"></span>
+  <main id="stages"></main>
+  <section id="submit" class="submit" aria-label="全体の入力率と提出"></section>
+  <div id="sheetWrap"></div>
+</div>
+<footer><div class="wrap muted" style="display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between;font-size:13px;padding-top:24px;padding-bottom:24px"><span>東京ブランディング大学校 / パーソナルベンチャーキャピタル合同会社</span><span>書いた内容は、このブラウザの中にだけ保存されます。</span></div></footer>
+
+<script src="js/html2canvas.min.js"></script>
+<script src="js/jspdf.umd.min.js"></script>
+<script>
+{
+const F = (key, label, ph, rows) => ({ key, label, ph: ph || '', rows: rows || 3 });
+const G = (title, cols, fields, dark) => ({ title, cols, fields, dark });
+const SHEETS = {
+  drivein: [G('ドライブイン(自己紹介)', 3, [F('in_name', 'お名前(ニックネーム)', '例:チカさん', 2), F('in_purpose', '本日参加した目的', '', 2), F('in_why', '最近なぜ/違和感に思ったこと', '', 2)])],
+  start: [G('3つのルールを読んで', 1, [F('start_rule', 'いちばん大事にしたいルールと、その理由', '', 2)])],
+  ch1: [G('定義シート(3分・直感で)', 2, [F('ch1_brand', 'ブランドとは、', '', 3), F('ch1_branding', 'ブランディングとは、', '', 3)])],
+  ch3: [
+    G('① 今の価値観(VALUE・現在)— 直感で', 3, [F('ch3_now', '今やっている事'), F('ch3_waku', 'ワクワクする事・熱中する事'), F('ch3_fut', '将来やりたい事')]),
+    G('② なぜ?で遡る(WHY・過去)← 社会人から幼少期へ', 6, [F('ch3_a6', '社会人', '', 4), F('ch3_a5', '高校生', '', 4), F('ch3_a4', '中学生', '', 4), F('ch3_a3', '小学生', '', 4), F('ch3_a2', '保育園・幼稚園', '', 4), F('ch3_a1', '幼少期', '', 4)]),
+    G('③ 原体験を5Wで(未来の自分へ一番伝えたいメッセージ)', 3, [F('ch3_when', 'WHEN 何才の時・主人公はダレか', '', 2), F('ch3_why', 'WHY どういう体験・課題/障害', '', 2), F('ch3_what', 'WHAT 過去の自分へのアドバイス・リアルなセリフ', '', 2), F('ch3_who', 'WHO 当時の自分と同じ状況の人・感情', '', 2), F('ch3_where', 'WHERE どこにいる・臨場感', '', 2), F('ch3_how', 'HOW 何を使って伝える', '', 2)])
+  ],
+  after: [
+    G('① 感じた事のシェア', 2, [F('after_listen', '話を聞いてみて:感じた事/共感した所', '', 3), F('after_talk', '話をしてみて:感じた事/共感した所', '', 3)]),
+    G('② 他己紹介(聞いた相手を紹介する)', 4, [F('after_o_do', 'その人がやっている事', '', 3), F('after_o_why', 'なぜやっているか', '', 3), F('after_o_person', '人となり', '', 3), F('after_o_waku', 'どこがワクワクしていたか', '', 3)])
+  ],
+  intro: [G('Before(ライスワークとライフワークの区別がつかない)', 3, [F('ch4_name', '名前'), F('ch4_means', '自分の名前から、今持っている手段(1行に1つ)', '', 3), F('ch4_intro', '①自己紹介:初めて会う人に、自分をどう伝えるか', '', 3)], true)],
+  ch2: [
+    G('サービス', 4, [F('ch2_s_why', 'WHY ④ なぜサービスをはじめたのか'), F('ch2_s_how', 'HOW ① どんな手段を持っているか?'), F('ch2_s_what', 'WHAT ③ どんなメッセージ'), F('ch2_s_who', 'WHO ② to C ダレが問題・どんな課題を抱えているか')], true),
+    G('ブランド', 4, [F('ch2_b_why', 'WHY ⑨ 独自の価値は何か?'), F('ch2_b_how', 'HOW ⑫ どんな独自の価値があるか'), F('ch2_b_what', 'WHAT ⑪ どんなメッセージ'), F('ch2_b_who', 'WHO ⑩ to B どの企業・市場のどんな課題か')], true),
+    G('CEO', 4, [F('ch2_c_why', 'WHY ⑧ なぜはじめたのか(原体験)'), F('ch2_c_how', 'HOW ⑤ どんな思いでやっているか'), F('ch2_c_what', 'WHAT ⑦ どんなメッセージ'), F('ch2_c_who', 'WHO ⑥ to 社会 どんな社会問題を解決したいか')], true)
+  ],
+  ch4: [
+    G('After(ライスワークとライフワークの区別がつけられる)', 2, [F('ch4_artist', 'アーティスト:自分が大事にしたい思想', '世界のどんな課題を解決したいか', 2), F('ch4_corp', '法人名/個人事業主名/法人名の仮', 'どんな社会問題を解決するか', 2)], true),
+    G('事業とサービス', 3, [F('hw_b1', '市場 to B:事業①とサービス', 'どんな企業・市場の問題を解決したいか', 3), F('hw_b2', '市場 to B:事業②とサービス', '', 3), F('hw_c', '事業③ to C とサービス', 'どんな人の課題を解決したいか', 3)]),
+    G('誰の、どんな問題を解決するか', 4, [F('ch4_p_world', 'to 世界問題', '自分の世界観を深める/伝える', 2), F('ch4_p_soc', 'to 社会問題', 'なぜ社会に存在するか', 2), F('ch4_p_b', 'to B問題', '中長期のビジネスパートナーになれるか', 2), F('ch4_p_c', 'to C課題', 'どんな課題の時に相談できるか', 2)])
+  ],
+  driveout: [G('ドライブアウト(振り返り)', 3, [F('out_feel', '今日の感想/質問', '', 3), F('out_ask', '今日生まれた問い', '', 3), F('out_vibe', '今日一番、バイブスが生まれた瞬間', '', 3)])],
+  homework: [G('宿題(DAY2で共有)', 2, [F('hw_thought', '思想・感性(自分の究極の思想)', '例:仕事ができる人を世界で増やす', 3), F('hw_corp_final', '仮の法人名(決定版)', '', 3), F('hw_share', 'DAY2で共有したいこと', '', 3), F('hw_1on1', '1on1で相談したいこと(任意)', '', 3)], true)]
+};
+const STAGES = [
+  { id: 'drivein', code: 'DRIVE IN', short: 'ドライブイン', name: 'ドライブイン', focus: '自己紹介で場に入る', slideLabel: 'SLIDE', sheetTitle: 'ドライブイン(自己紹介)', img: 'img/drive-in.png', howto: '3つの問いに答えて、自己紹介をします。', purpose: '自分がなぜ今日ここにいるのかを言葉にする', goal: '参加した目的と、最近の「なぜ?」を1つずつ言える', todos: ['お名前(ニックネーム)', '本日参加した目的', '最近なぜ/違和感に思ったこと'], uses: 'ドライブインの3つの問い', outputs: '今日の目的\n最近の違和感', time: '5分', timeNote: '9:00 自己紹介' },
+  { id: 'start', code: 'START', short: 'はじめる', name: 'はじめる', focus: '場に入る', slideLabel: 'SLIDE', sheetTitle: 'グランドルール', img: 'img/grand-rules.png', howto: '3つのルールを読み、いちばん大事にしたいものを書きます。', purpose: 'この場のルールを知り、安心して書ける状態で入る', goal: '3つのルールに「大事にする」と言える', todos: ['3つのルールを読む', '大事にしたいルールを書く'], uses: 'グランドルール', outputs: '—', time: '3分', timeNote: '9:00 そもそも' },
+  { id: 'ch1', code: 'CHAPTER 01', short: '入る', name: '入る', focus: '前提に気づく', slideLabel: 'SLIDE', sheetTitle: '「ブランド」「ブランディングとは?」', img: 'img/brand-definition.png', howto: '3分で、直感で書きます。正解はありません。', purpose: '自分にとっての「ブランド」の前提を知る', goal: '自分の定義を1行で書き、人との違いに気づく', todos: ['3分で定義を書く', 'ほかの人の定義と並べる'], uses: '定義シート\n3分タイマー', outputs: 'あなたの定義', time: '8分', timeNote: '9:15 CBOについて' },
+  { id: 'ch3', code: 'CHAPTER 02', short: '掘る', name: '掘る', focus: '今から過去へ深く掘る', slideLabel: 'WORK · 原体験ジャーニー', sheetTitle: '原体験ジャーニーシート', img: 'img/gentaiken-journey-sheet.png', howto: '右の「現在」から始め、なぜ?を繰り返しながら左の「過去」へ遡ります。', purpose: '「なぜ?」に答えながら遡り、原体験を見つける', goal: '原体験を5Wで語れ、未来の自分へのメッセージが1つ決まる', todos: ['① 今の価値観を3つ書く', '② 社会人から幼少期へ遡る', '③ 原体験を5Wで書く'], uses: '原体験ジャーニーシート\n水平・垂直の質問', outputs: '原体験\n未来の自分へのメッセージ', time: '約60分', timeNote: '9:30 プチ原体験ワーク / 10:30 原体験ワーク' },
+  { id: 'after', code: 'CHAPTER 03', short: 'シェアする', name: 'シェアする', focus: '点を線にする', slideLabel: 'SHARE · 原体験ジャーニー', sheetTitle: '振り返りシェア(原体験ジャーニーシート)', img: 'img/furikaeri-share.png', howto: '原体験ジャーニーシートをもとに、話す人と聞く人に分かれて聞き合い、感じた事をシェアして、相手を他己紹介します。', purpose: 'ひとりでは点のままの話を、人に聞いてもらって線にする', goal: '相手を他己紹介でき、自分の話のどこに共感が生まれたかが分かる', todos: ['① 聞いてみて感じた事/共感した所', '① 話してみて感じた事', '② 相手を他己紹介する'], uses: '原体験ジャーニーシート\n振り返りシェア', outputs: '他己紹介\n共感が生まれた所', time: '約60分', timeNote: '11:30 シェア/他己紹介/質疑応答' },
+  { id: 'intro', code: 'CHAPTER 04', short: '自己紹介する', name: '自己紹介する', focus: '今の自分を書き出す', slideLabel: 'WORK · 個人が法人化する(Before)', sheetTitle: '個人が法人化するワークシート(Before)', img: 'img/houjinka-before.png', howto: '初めて会う人に、自分をどう伝えるかを書き、自分の名前から今持っている手段を書き出します。', purpose: '今の自分の手段と自己紹介を書き出し、頭の中で全部つながっている状態に気づく', goal: '名前・手段・自己紹介が書け、ライスワークとライフワークの区別がついていないことに気づく', todos: ['①自己紹介を書く', '②名前から、今持っている手段を書き出す'], uses: '個人が法人化するワークシート(Before)', outputs: '今の自分の手段\n自己紹介', time: '約20分', timeNote: '13:30 個人と法人について' },
+  { id: 'ch2', code: 'CHAPTER 05', short: '知る', name: '知る', focus: '視点を揃える', slideLabel: 'WORK · ブランド戦略MAP', sheetTitle: 'ブランド戦略MAPシート', img: 'img/brand-strategy-map.png', howto: '①から順に埋め、課題解決・コミュニケーション・ストーリーの3つが成立するかを見ます。', purpose: 'サービス・ブランド・CEOの層で、課題解決の流れを整理する', goal: '自分の手段で、誰のどんな課題を解決するかが1枚でつながる', todos: ['①〜④(サービス)を埋める', '⑤〜⑧(CEO)を埋める', '⑨〜⑫(ブランド)を埋める'], uses: 'ブランド戦略MAPシート', outputs: 'サービス・ブランド・CEOの整理', time: '約45分', timeNote: '13:30 ブランド戦略MAP' },
+  { id: 'ch4', code: 'CHAPTER 06', short: '個人が法人化する', name: '個人が法人化する', focus: '区別して、1本の線にする', slideLabel: 'WORK · 個人が法人化する(After)', sheetTitle: '個人が法人化するワークシート(After)', img: 'img/houjinka-after.png', howto: '上から順に、アーティスト(思想)→法人→事業・サービスと書き、右の4つの問題につなげます。自分軸で、やりたくないことは書かなくて大丈夫です。', purpose: 'ライスワークとライフワークを区別し、思想から事業までを1本の線にする', goal: 'アーティスト・法人・事業・サービスと、それぞれが解決する問題がつながる', todos: ['アーティスト欄に自分の思想', '法人名(仮)', '事業とサービス(to B・to C)', 'to 世界・社会・B・C の問題'], uses: '個人が法人化するワークシート(After)', outputs: '仮の法人化マップ', time: '約60分', timeNote: '14:30 追加ワーク / 15:30 シェア' },
+  { id: 'driveout', code: 'DRIVE OUT', short: 'ドライブアウト', name: 'ドライブアウト', focus: '問いを持ち帰る', slideLabel: 'LAST SLIDE', sheetTitle: 'ドライブアウト(振り返り)', img: 'img/drive-out.png', howto: '3つの問いで1日を振り返ります。答えより、生まれた問いを大事に。', purpose: '今日の体験を、問いにして持ち帰る', goal: '「今日生まれた問い」を1つ言葉にする', todos: ['今日の感想/質問', '今日生まれた問い', 'バイブスが生まれた瞬間'], uses: 'ドライブアウトの3つの問い', outputs: '今日生まれた問い', time: '5分', timeNote: '最後に' },
+  { id: 'homework', code: 'HOMEWORK', short: '宿題', name: '宿題', focus: '区別して、1本の線にする', slideLabel: 'HOMEWORK', sheetTitle: '個人が法人化するワークシート(仕上げ)', img: 'img/houjinka-worksheet.png', howto: '熱量は一度忘れて、思想・感性を言葉にします。会社ではなく自分軸で、上から下まで1本の筋を通します。', purpose: 'ライスワークとライフワークを区別し、思想から事業までを1本の線にする', goal: '自分の思想と仮の法人名が決まり、DAY2で共有できる', todos: ['思想・感性を言語化する', '仮の法人名を決める', 'DAY2で共有したいことを書く', '1on1で書き方を相談(任意)'], uses: '個人が法人化するワークシート\n1on1(日程調整のURLを送ります)', outputs: '仮の法人化マップ\nDAY2で共有する宿題', time: 'DAY2まで', timeNote: 'DAY2(オンライン)で共有:Aコース 11.28(土)/Bコース 12.5(土)' }
+];
+const KEY = 'cbo-taiken-lab-v1';
+const $ = (s) => document.querySelector(s);
+const esc = (t) => String(t ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+let S = { vals: {}, tab: {}, saved: {}, submittedAt: null };
+try { const r = localStorage.getItem(KEY); if (r) S = Object.assign(S, JSON.parse(r)); } catch (e) {}
+let saveT;
+const persist = () => { clearTimeout(saveT); saveT = setTimeout(() => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }, 400); };
+const V = (k) => (S.vals[k] || '').trim();
+
+function stats() {
+  const list = STAGES.map((s) => {
+    const fields = SHEETS[s.id].flatMap((g) => g.fields.map((f) => ({ ...f, group: g.title })));
+    const filled = fields.filter((f) => V(f.key));
+    return { s, fields, filled: filled.length, all: fields.length, rate: fields.length ? Math.round(filled.length / fields.length * 100) : 0 };
+  });
+  const nowIdx = list.findIndex((x) => x.rate < 100);
+  list.forEach((x, i) => { x.st = x.rate === 100 ? 'done' : (i === nowIdx ? 'now' : 'next'); });
+  const tot = list.reduce((n, x) => n + x.all, 0), fil = list.reduce((n, x) => n + x.filled, 0);
+  return { list, tot, fil, rate: tot ? Math.round(fil / tot * 100) : 0, nowIdx };
+}
+const ST_LABEL = { done: '完了', now: 'いまここ', next: 'これから' };
+const MARK = { done: '✓', now: '●', next: '' };
+
+function railHTML(x) {
+  return `<div class="railcol"><span class="node ${x.st}">${MARK[x.st]}</span><span class="track ${x.st === 'next' ? 'next' : ''}" aria-hidden="true"><i data-fill="${x.s.id}"></i></span></div>
+  <div class="railtxt"><span class="lbl">${x.s.code}</span><span class="sname"><span data-hl="${x.s.id}">${esc(x.s.name)}</span></span><span class="tag ${x.st}">${ST_LABEL[x.st]}</span>
+  <span class="muted" style="font-size:13px">${esc(x.s.time)}</span><span class="muted" style="font-size:13px;margin-top:4px">フォーカス:${esc(x.s.focus)}</span>
+  <span style="display:flex;flex-direction:column;margin-top:20px"><span class="muted" style="font-size:14px">入力率</span><span class="rate">${x.rate}%</span><span class="muted" style="font-size:12px">${x.filled} / ${x.all} 項目</span></span></div>`;
+}
+function fieldsHTML(id) {
+  return SHEETS[id].map((g) => `<fieldset><legend class="${g.dark ? 'dk' : ''}">${esc(g.title)}</legend><div class="fgrid" style="grid-template-columns:repeat(${g.cols},minmax(0,1fr))">${g.fields.map((f) => { const v = S.vals[f.key] || ''; return `<label class="fld"><span>${esc(f.label)}</span><textarea data-k="${f.key}" placeholder="${esc(f.ph)}" style="height:${f.rows * 20 + 18}px" class="${v.trim() ? 'filled' : ''}">${esc(v)}</textarea></label>`; }).join('')}</div></fieldset>`).join('');
+}
+function centerHTML(x) {
+  const s = x.s, t = S.tab[s.id] || 'img';
+  const tab = (k, l) => `<button class="tab" role="tab" aria-selected="${t === k}" data-tab="${s.id}:${k}">${l}</button>`;
+  let body = '';
+  if (t === 'img') body = `<img src="${s.img}" alt="${esc(s.sheetTitle)}の見本" loading="lazy"><div class="foot"><span class="muted" style="font-size:13px">${esc(s.howto)}</span><button class="dark" data-tab="${s.id}:fill">記入シートへ →</button></div>`;
+  if (t === 'fill') body = `${fieldsHTML(s.id)}<div class="foot"><span class="muted" style="font-size:13px"><span data-filled="${s.id}">${x.all}項目中 ${x.filled}項目 記入</span> · 書いた内容はこの端末に自動で残ります</span><button class="dark" data-tab="${s.id}:save">保存へ →</button></div>`;
+  if (t === 'save') {
+    const rows = x.fields.filter((f) => V(f.key));
+    body = `<b style="font-size:14px">${x.all}項目中 ${x.filled}項目 記入</b>${rows.length ? `<div class="rows">${rows.map((f) => `<div><span>${esc(f.label)}</span><span class="pre">${esc(V(f.key))}</span></div>`).join('')}</div>` : '<span class="muted" style="font-size:14px">まだ何も書いていません。「記入シート」から始めましょう。</span>'}
+    <div class="foot" style="border-top:2px solid #1F1B16"><div style="display:flex;flex-direction:column"><b style="font-size:14px" aria-live="polite">${esc(S.saved[s.id] || 'まだ保存していません')}</b><span class="muted" style="font-size:12px">保存すると、まとめシートに反映されます</span></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="light" data-tab="${s.id}:fill">書き直す</button><button class="dark" data-save="${s.id}">この端末に保存</button></div></div>`;
+  }
+  return `<div class="tabs" role="tablist" aria-label="${esc(s.name)}のスライド">${tab('img', 'イメージ')}${tab('fill', '記入シート')}${tab('save', '保存' + (S.saved[s.id] ? ' ✓' : ''))}</div>
+  <section class="slide ${x.st}"><div class="slide-h"><span class="lbl" style="font-size:11px">${esc(s.slideLabel)}</span><span>${esc(s.sheetTitle)}</span></div>${body}</section>`;
+}
+function infoHTML(x) {
+  const s = x.s;
+  return `<div><small>目的</small><span>${esc(s.purpose)}</span></div><div><small>ゴール</small><b>${esc(s.goal)}</b></div>
+  <div><small>やる事</small>${s.todos.map((t) => `<span class="todo"><i></i><span>${esc(t)}</span></span>`).join('')}</div>
+  <div><small>使うもの</small><span class="pre">${esc(s.uses)}</span></div><div><small>持ち帰るもの</small><span class="pre">${esc(s.outputs)}</span></div>
+  <div><small>時間</small><b style="font-size:20px;font-weight:900">${esc(s.time)}</b><span class="muted" style="font-size:13px">${esc(s.timeNote)}</span></div>`;
+}
+function sumHTML(st) {
+  const done = st.fil === st.tot;
+  $('#sum').classList.toggle('done', done);
+  return `<div class="sum-top"><div><span style="font-size:14px;font-weight:700">提出率</span><div class="big">${st.rate}%</div></div>
+  <div style="flex:1 1 320px;display:flex;flex-direction:column;gap:6px;padding-bottom:6px"><b style="font-size:15px">${done ? '提出完了。すべてのワークが記入されました。' : `あと${st.tot - st.fil}項目で提出完了です`}</b><div class="bar"><i style="width:${st.rate}%;background:${done ? '#BE3A21' : '#1F1B16'}"></i></div><span class="muted" style="font-size:13px">全${st.tot}項目中 ${st.fil}項目 記入 · すべての段階を100%にすると提出完了です</span></div></div>
+  <div class="chips">${st.list.map((x) => `<a href="#${x.s.id}" class="chip ${x.rate === 100 ? 'ok' : ''}"><b>${esc(x.s.short)}</b><strong>${x.rate}%</strong><span class="mini"><i style="width:${x.rate}%"></i></span><small>${x.rate === 100 ? '記入完了 ✓' : `あと${x.all - x.filled}項目`}</small></a>`).join('')}</div>`;
+}
+function submitHTML(st) {
+  const done = st.fil === st.tot;
+  return `<div class="l"><b style="font-size:15px">全体の入力率</b><span style="font-size:56px;font-weight:900;line-height:1.05">${st.rate}%</span><span class="muted" style="font-size:12px">${st.fil} / ${st.tot} 項目</span></div>
+  <div class="r"><span class="muted" style="font-size:14px;flex:1 1 260px">${done ? 'すべて記入されました。提出すると、ここまでの内容が1枚のまとめシートになります。' : `未記入が${st.tot - st.fil}項目あります。このまま提出しても、まとめシートは作れます(あとで書き足せます)。`}</span><button class="subbtn" id="doSubmit">提出</button></div>`;
+}
+function sheetHTML(st) {
+  const first = (...ks) => { for (const k of ks) if (V(k)) return V(k); return ''; };
+  const K = (l, v, big) => `<div><small>${l}</small>${v ? `<span class="${big ? 's' : ''}">${esc(v)}</span>` : '<span class="e">未記入</span>'}</div>`;
+  return `<section id="summary-sheet" class="sheet" aria-label="まとめシート">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;border-bottom:3px solid #1F1B16;padding-bottom:16px">
+    <div><span class="lbl">CBO育成講座 18期 · DAY1 まとめシート</span><div style="font-size:40px;font-weight:900;line-height:1.2">${esc(V('in_name') || 'あなた')}のブランドマップ</div></div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end"><span class="muted" style="font-size:13px">提出 ${esc(S.submittedAt)}</span><b style="font-size:20px;font-weight:900">入力率 ${st.rate}%</b></div></div>
+  <div class="keys">${K('お名前', V('in_name'))}${K('参加した目的', V('in_purpose'))}${K('原体験', first('ch3_why', 'ch3_a1', 'ch3_a2', 'ch3_a3', 'ch3_a4', 'ch3_a5', 'ch3_a6'), 1)}${K('アーティスト(思想)', V('ch4_artist'), 1)}${K('法人名(仮)', first('hw_corp_final', 'ch4_corp'), 1)}${K('今日生まれた問い', V('out_ask'), 1)}</div>
+  <div class="parts">${st.list.map((x) => `<div class="part"><div style="display:flex;justify-content:space-between"><b style="font-size:15px;font-weight:900">${esc(x.s.name)}</b><b style="font-size:13px">${x.rate}%</b></div>${x.fields.filter((f) => V(f.key)).map((f) => `<div class="r"><span class="muted">${esc(f.label)}</span><span class="pre">${esc(V(f.key))}</span></div>`).join('')}<span class="muted" style="font-size:12px">${x.all - x.filled ? `未記入 ${x.all - x.filled}項目` : '記入完了 ✓'}</span></div>`).join('')}</div>
+  <div class="foot" style="padding-top:16px"><span class="muted" style="font-size:13px">DAY2(オンライン)でこのシートを共有します。書き足したら、もう一度「提出」を押すと更新されます。</span>
+  <div data-no-pdf="1" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span id="pdfMsg" class="muted" style="font-size:13px" aria-live="polite"></span><button class="dark" id="pdfBtn">PDFで保存</button><button class="light" id="closeSheet">シートを閉じる</button></div></div></section>`;
+}
+
+function renderAll() {
+  const st = stats();
+  $('#sum').innerHTML = sumHTML(st);
+  $('#progLbl').textContent = `PROGRESS · ${st.nowIdx < 0 ? STAGES.length : st.nowIdx + 1} / ${STAGES.length} · 下にスクロールすると、左の線が進みます`;
+  $('#stages').innerHTML = st.list.map((x) => `<article id="${x.s.id}" data-stage="${x.s.id}" class="stage"><div class="rail" data-rail="${x.s.id}">${railHTML(x)}</div><div class="center" data-center="${x.s.id}">${centerHTML(x)}</div><aside class="info ${x.st}" data-info="${x.s.id}">${infoHTML(x)}</aside></article>`).join('');
+  $('#submit').innerHTML = submitHTML(st);
+  $('#sheetWrap').innerHTML = S.submittedAt ? sheetHTML(st) : '';
+  measure();
+}
+function refresh() {
+  const st = stats();
+  $('#sum').innerHTML = sumHTML(st);
+  $('#progLbl').textContent = `PROGRESS · ${st.nowIdx < 0 ? STAGES.length : st.nowIdx + 1} / ${STAGES.length} · 下にスクロールすると、左の線が進みます`;
+  st.list.forEach((x) => {
+    $(`[data-rail="${x.s.id}"]`).innerHTML = railHTML(x);
+    const info = $(`[data-info="${x.s.id}"]`); info.className = `info ${x.st}`;
+    const sl = $(`[data-center="${x.s.id}"] .slide`); if (sl) sl.className = `slide ${x.st}`;
+    const fl = $(`[data-filled="${x.s.id}"]`); if (fl) fl.textContent = `${x.all}項目中 ${x.filled}項目 記入`;
+  });
+  $('#submit').innerHTML = submitHTML(st);
+  measure();
+}
+function rerenderCenter(id) {
+  const st = stats(); const x = st.list.find((y) => y.s.id === id);
+  $(`[data-center="${id}"]`).innerHTML = centerHTML(x);
+}
+
+document.addEventListener('click', async (e) => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.tab) { const [id, t] = b.dataset.tab.split(':'); S.tab[id] = t; persist(); rerenderCenter(id); return; }
+  if (b.dataset.save) { const d = new Date(); S.saved[b.dataset.save] = `保存しました ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`; persist(); rerenderCenter(b.dataset.save); return; }
+  if (b.id === 'doSubmit') { const d = new Date(); S.submittedAt = `${d.getFullYear()}.${d.getMonth() + 1}.${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`; persist(); $('#sheetWrap').innerHTML = sheetHTML(stats()); $('#summary-sheet').scrollIntoView({ block: 'start' }); return; }
+  if (b.id === 'closeSheet') { S.submittedAt = null; persist(); $('#sheetWrap').innerHTML = ''; return; }
+  if (b.id === 'pdfBtn') {
+    const msg = $('#pdfMsg'), el = $('#summary-sheet');
+    if (!window.html2canvas || !window.jspdf) { msg.textContent = 'PDFを作れませんでした'; return; }
+    msg.textContent = 'PDFを作成中…';
+    try {
+      const canvas = await window.html2canvas(el, { scale: 2, backgroundColor: '#FFFFFF', ignoreElements: (n) => n.getAttribute && n.getAttribute('data-no-pdf') === '1' });
+      const pdf = new window.jspdf.jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      const pw = 210, ph = 297, m = 10, r = Math.min((pw - m * 2) / canvas.width, (ph - m * 2) / canvas.height);
+      const w = canvas.width * r, h = canvas.height * r;
+      pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', (pw - w) / 2, m, w, h);
+      pdf.save(`CBO育成講座_DAY1まとめ_${V('in_name') || 'シート'}.pdf`);
+      msg.textContent = '保存しました';
+    } catch (err) { msg.textContent = 'PDFを保存できませんでした'; }
+  }
+});
+document.addEventListener('input', (e) => {
+  const k = e.target.dataset && e.target.dataset.k; if (!k) return;
+  S.vals[k] = e.target.value; e.target.classList.toggle('filled', !!e.target.value.trim()); persist(); refresh();
+});
+
+let ticking = false;
+function measure() {
+  ticking = false;
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const vh = window.innerHeight || 800;
+  document.querySelectorAll('[data-stage]').forEach((el) => {
+    const r = el.getBoundingClientRect();
+    const p = Math.max(0, Math.min(1, reduce ? 1 : (vh * 0.85 - r.top) / Math.max(r.height * 0.9, 1)));
+    const id = el.dataset.stage, pc = Math.round(p * 100);
+    const f = el.querySelector(`[data-fill="${id}"]`); if (f) f.style.height = pc + '%';
+    const h = el.querySelector(`[data-hl="${id}"]`); if (h) h.style.background = `linear-gradient(90deg,#E9FF3B ${pc}%,transparent ${pc}%)`;
+  });
+}
+const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(measure); } };
+window.addEventListener('scroll', onScroll, { passive: true });
+window.addEventListener('resize', onScroll);
+renderAll();
+}
+</script>
+</body>
+</html>
