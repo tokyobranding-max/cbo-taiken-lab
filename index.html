@@ -77,6 +77,8 @@ legend.dk{background:#1F1B16;color:#F6F2EA;padding:6px 10px;border:0}
 .fld span{font-size:11px;font-weight:700;line-height:1.4;min-height:2.8em}
 .fld textarea{width:100%;margin-top:auto;resize:vertical;border:1px solid #B0A797;border-radius:2px;background:#F6F2EA;padding:6px 8px;font:400 13px/1.5 'Noto Sans JP',sans-serif;color:#1F1B16}
 .fld textarea.filled{border-color:#1F1B16;background:#fff}
+.howto{width:100%;aspect-ratio:16/9;background:#1F1B16;display:block;border:1px solid #1F1B16}
+.steps{margin:0;padding-left:1.4em;font-size:14px;line-height:1.8}
 .rows{border-top:1px solid #D6CCBB}
 .rows div{display:grid;grid-template-columns:minmax(0,200px) minmax(0,1fr);gap:12px;padding:8px 0;border-bottom:1px solid #D6CCBB;font-size:14px}
 .rows div span:first-child{color:#5E564C;font-size:13px}
@@ -123,7 +125,7 @@ footer{border-top:1px solid #D6CCBB;margin-top:48px}
       <div><b>9:00</b><span>自己紹介/そもそも</span></div><div><b>9:15</b><span>CBOについて</span></div><div><b>9:30</b><span>プチ原体験ワーク</span></div><div><b>9:50</b><span>シェア/質疑応答</span></div><div><b>10:30</b><span>原体験ワーク</span></div><div><b>11:30</b><span>シェア/他己紹介/質疑応答</span></div><div class="muted"><b>12:30</b><span>ランチ(近くのお店)</span></div><div><b>13:30</b><span>個人と法人について / ブランド戦略MAP</span></div><div><b>14:30</b><span>追加ワーク</span></div><div><b>15:30</b><span>シェア</span></div><div><b>16:00</b><span>終了</span></div>
     </div>
   </div>
-  <p class="muted" style="font-size:13px;border-top:1px solid #D6CCBB;padding-top:12px;margin:20px 0 0">各段階のスライドは「イメージ」で見本を見て、「記入シート」で書き、「保存」で確かめます。書いた内容は、このブラウザの中にだけ保存されます。</p>
+  <p class="muted" style="font-size:13px;border-top:1px solid #D6CCBB;padding-top:12px;margin:20px 0 0">各段階のスライドは「イメージ」で見本を見て、「記入シート」で書き、迷ったら「記入方法」の動画を見て、「保存」で確かめます。書いた内容は、このブラウザの中にだけ保存されます。</p>
 </div>
 <div class="wrap" style="padding-bottom:64px">
   <section id="sum" class="sum" aria-label="提出率"></section>
@@ -179,6 +181,7 @@ const STAGES = [
   { id: 'driveout', code: 'DRIVE OUT', short: 'ドライブアウト', name: 'ドライブアウト', focus: '問いを持ち帰る', slideLabel: 'LAST SLIDE', sheetTitle: 'ドライブアウト(振り返り)', img: 'img/drive-out.png', howto: '3つの問いで1日を振り返ります。答えより、生まれた問いを大事に。', purpose: '今日の体験を、問いにして持ち帰る', goal: '「今日生まれた問い」を1つ言葉にする', todos: ['今日の感想/質問', '今日生まれた問い', 'バイブスが生まれた瞬間'], uses: 'ドライブアウトの3つの問い', outputs: '今日生まれた問い', time: '5分', timeNote: '最後に' },
   { id: 'homework', code: 'HOMEWORK', short: '宿題', name: '宿題', focus: '区別して、1本の線にする', slideLabel: 'HOMEWORK', sheetTitle: '個人が法人化するワークシート(仕上げ)', img: 'img/houjinka-worksheet.png', howto: '熱量は一度忘れて、思想・感性を言葉にします。会社ではなく自分軸で、上から下まで1本の筋を通します。', purpose: 'ライスワークとライフワークを区別し、思想から事業までを1本の線にする', goal: '自分の思想と仮の法人名が決まり、DAY2で共有できる', todos: ['思想・感性を言語化する', '仮の法人名を決める', 'DAY2で共有したいことを書く', '1on1で書き方を相談(任意)'], uses: '個人が法人化するワークシート\n1on1(日程調整のURLを送ります)', outputs: '仮の法人化マップ\nDAY2で共有する宿題', time: 'DAY2まで', timeNote: 'DAY2(オンライン)で共有:Aコース 11.28(土)/Bコース 12.5(土)' }
 ];
+const HOWTO = {"drivein": ["ドライブイン(自己紹介):ニックネーム、今日来た目的、最近の「なぜ?」を1行ずつ書きます"], "start": ["3つのルールを読んで:3つのルールから1つ選び、その理由を書きます"], "ch1": ["定義シート:3分で、直感で書きます。正解はありません"], "ch3": ["① 今の価値観:今やっている事・ワクワクする事・将来やりたい事を、直感で書きます", "② なぜ?で遡る:右の「社会人」から左の「幼少期」へ、「なぜ?」を繰り返して遡ります", "③ 原体験を5Wで:いちばん熱量が上がった体験を、5Wで書き出します"], "after": ["① 感じた事のシェア:話を聞いて、話をしてみて、感じた事と共感した所を書きます", "② 他己紹介:聞いた相手を、その人の言葉で紹介できるように書きます"], "intro": ["Before:名前から出ている手段を1行に1つずつ書き、初めて会う人への自己紹介を書きます"], "ch2": ["サービス:①HOW → ②WHO → ③WHAT → ④WHY の順に埋めます", "ブランド:自分の独自の価値と、to B のどんな課題を解くかを書きます", "CEO:どんな思いでやっているかを、原体験とつなげて書きます"], "ch4": ["After:アーティスト=自分の思想、法人=社会での名前を書きます", "事業とサービス:to B の事業と、to C の事業を、サービスと一緒に書きます", "誰の、どんな問題を解決するか:世界・社会・B・C、それぞれ誰のどんな問題かを書きます"], "driveout": ["ドライブアウト:感想、今日生まれた問い、バイブスが上がった瞬間を書きます"], "homework": ["宿題:熱量は一度忘れて、思想を一文にし、仮の法人名を決めます"]};
 const KEY = 'cbo-taiken-lab-v1';
 const $ = (s) => document.querySelector(s);
 const esc = (t) => String(t ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -217,12 +220,15 @@ function centerHTML(x) {
   let body = '';
   if (t === 'img') body = `<img src="${s.img}" alt="${esc(s.sheetTitle)}の見本" loading="lazy"><div class="foot"><span class="muted" style="font-size:13px">${esc(s.howto)}</span><button class="dark" data-tab="${s.id}:fill">記入シートへ →</button></div>`;
   if (t === 'fill') body = `${fieldsHTML(s.id)}<div class="foot"><span class="muted" style="font-size:13px"><span data-filled="${s.id}">${x.all}項目中 ${x.filled}項目 記入</span> · 書いた内容はこの端末に自動で残ります</span><button class="dark" data-tab="${s.id}:save">保存へ →</button></div>`;
+  if (t === 'how') body = `<video class="howto" src="videos/${s.id}.mp4" controls playsinline preload="metadata" aria-label="${esc(s.name)}の記入方法の動画"></video>
+    <ol class="steps">${(HOWTO[s.id] || []).map((h) => `<li>${esc(h)}</li>`).join('')}<li>書き終えたら「保存」タブで内容を確かめ、「この端末に保存」を押します</li></ol>
+    <div class="foot"><span class="muted" style="font-size:13px">動画の回答は例です。音声はありません。</span><button class="dark" data-tab="${s.id}:fill">記入シートへ →</button></div>`;
   if (t === 'save') {
     const rows = x.fields.filter((f) => V(f.key));
     body = `<b style="font-size:14px">${x.all}項目中 ${x.filled}項目 記入</b>${rows.length ? `<div class="rows">${rows.map((f) => `<div><span>${esc(f.label)}</span><span class="pre">${esc(V(f.key))}</span></div>`).join('')}</div>` : '<span class="muted" style="font-size:14px">まだ何も書いていません。「記入シート」から始めましょう。</span>'}
     <div class="foot" style="border-top:2px solid #1F1B16"><div style="display:flex;flex-direction:column"><b style="font-size:14px" aria-live="polite">${esc(S.saved[s.id] || 'まだ保存していません')}</b><span class="muted" style="font-size:12px">保存すると、まとめシートに反映されます</span></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="light" data-tab="${s.id}:fill">書き直す</button><button class="dark" data-save="${s.id}">この端末に保存</button></div></div>`;
   }
-  return `<div class="tabs" role="tablist" aria-label="${esc(s.name)}のスライド">${tab('img', 'イメージ')}${tab('fill', '記入シート')}${tab('save', '保存' + (S.saved[s.id] ? ' ✓' : ''))}</div>
+  return `<div class="tabs" role="tablist" aria-label="${esc(s.name)}のスライド">${tab('img', 'イメージ')}${tab('fill', '記入シート')}${tab('how', '記入方法')}${tab('save', '保存' + (S.saved[s.id] ? ' ✓' : ''))}</div>
   <section class="slide ${x.st}"><div class="slide-h"><span class="lbl" style="font-size:11px">${esc(s.slideLabel)}</span><span>${esc(s.sheetTitle)}</span></div>${body}</section>`;
 }
 function infoHTML(x) {
