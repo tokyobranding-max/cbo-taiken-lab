@@ -100,6 +100,23 @@ legend.dk{background:#1F1B16;color:#F6F2EA;padding:6px 10px;border:0}
 .fld span{font-size:11px;font-weight:700;line-height:1.4;min-height:2.8em}
 .fld textarea{width:100%;margin-top:auto;resize:none;overflow:hidden;border:1px solid #B0A797;border-radius:2px;background:#F6F2EA;padding:6px 8px;font:400 13px/1.5 'Noto Sans JP',sans-serif;color:#1F1B16}
 .fld textarea.filled{border-color:#1F1B16;background:#fff}
+/* After framework layout */
+.fw{display:flex;flex-direction:column;gap:0}
+.fw-h{background:#1F1B16;color:#F6F2EA;font-size:13px;font-weight:700;padding:6px 10px;text-align:center}
+.fw-cols{display:grid;grid-template-columns:96px 18px minmax(0,1.35fr) 150px minmax(0,1fr);gap:10px 0;align-items:stretch;margin-top:14px}
+.fw-colh{font-size:11px;font-weight:700;color:#5E564C;padding-bottom:2px}
+.fw-node{display:flex;align-items:center;justify-content:center;text-align:center;font-size:13px;font-weight:700;border:2px solid #B0A797;background:#fff;color:#5E564C;padding:6px;min-height:44px;align-self:start}
+.fw-node.blk{background:#1F1B16;border-color:#1F1B16;color:#F6F2EA;font-weight:900}
+.fw-node.mk{flex-direction:column;line-height:1.3}
+.fw-ar{align-self:start;margin-top:14px;height:2px;background:#5E564C;position:relative}
+.fw-ar::after{content:"";position:absolute;right:-1px;top:-5px;border:6px solid transparent;border-left:8px solid #5E564C;border-right:0}
+.fw-in{display:flex;flex-direction:column;gap:8px;padding-right:12px}
+.fw-in .fld span,.fw-out .fld span{min-height:0}
+.fw-q{display:flex;align-items:center;justify-content:center;text-align:center;font-size:11px;font-weight:700;line-height:1.4;color:#5E564C;background:#ECE5D8;padding:10px 18px;clip-path:polygon(0 50%,14px 0,calc(100% - 14px) 0,100% 50%,calc(100% - 14px) 100%,14px 100%);align-self:start;min-height:56px}
+.fw-out{padding-left:12px}
+.fw-out .fld>span{display:inline-block;align-self:flex-start;font-size:13px;font-weight:900;color:#1F1B16;border:2px solid #1F1B16;border-radius:8px;padding:2px 10px;margin-bottom:2px}
+.fw .fld{height:auto}.fw .fld textarea{margin-top:0}
+@media(max-width:760px){.fw-cols{grid-template-columns:1fr}.fw-ar,.fw-colh{display:none}.fw-node.mk{flex-direction:row;gap:4px}.fw-node.mk br{display:none}.fw-in,.fw-out{padding:0}.fw-q{clip-path:none;justify-content:flex-start}.fw-node{justify-content:flex-start}}
 .howto{width:100%;aspect-ratio:16/9;background:#1F1B16;display:block;border:1px solid #1F1B16}
 .steps{margin:0;padding-left:1.4em;font-size:14px;line-height:1.8}
 .rows{border-top:1px solid #D6CCBB}
@@ -247,7 +264,23 @@ function railHTML(x) {
   <span class="muted" style="font-size:13px">${esc(x.s.time)}</span><span class="muted" style="font-size:13px;margin-top:4px">フォーカス:${esc(x.s.focus)}</span>
   <span style="display:flex;flex-direction:column;margin-top:20px"><span class="muted" style="font-size:14px">入力率</span><span class="rate">${x.rate}%</span><span class="muted" style="font-size:12px">${x.filled} / ${x.all} 項目</span></span></div>`;
 }
+function fldHTML(f) { const v = S.vals[f.key] || ''; return `<label class="fld"><span>${esc(f.label)}</span><textarea data-k="${f.key}" placeholder="${esc(f.ph)}" style="min-height:${f.rows * 20 + 18}px" class="${v.trim() ? 'filled' : ''}">${esc(v)}</textarea></label>`; }
+function afterFW() {
+  const all = {}; SHEETS.ch4.forEach((g) => g.fields.forEach((f) => { all[f.key] = f; }));
+  const L = (k, label) => fldHTML({ ...all[k], label: label || all[k].label });
+  const nm = (S.vals.ch4_name || '').trim().split('\n')[0];
+  const row = (node, inner, q, out) => `${node}<div class="fw-ar" aria-hidden="true"></div><div class="fw-in">${inner}</div><div class="fw-q">${q}</div><div class="fw-out">${out}</div>`;
+  return `<div class="fw"><div class="fw-h">After(ライスワークとライフワークの区別がつけられる)</div>
+  <div class="fw-cols">
+    <div class="fw-colh x"></div><div class="fw-colh x"></div><div class="fw-colh">書く</div><div class="fw-colh x" style="text-align:center">問い</div><div class="fw-colh" style="padding-left:12px">誰の、どんな問題を解決するか</div>
+    ${row(`<div class="fw-node">${nm ? esc(nm) : '名前'}</div>`, L('ch4_artist', 'アーティスト:自分が大事にしたい思想'), '自分の世界観を<br>深める/伝える', L('ch4_p_world', 'to 世界問題'))}
+    ${row('<div class="fw-node blk">法人化</div>', L('ch4_corp', '法人:法人名/個人事業主名/法人名の仮'), 'なぜ社会に<br>存在するか', L('ch4_p_soc', 'to 社会問題'))}
+    ${row('<div class="fw-node mk">市場<br>to B</div>', L('hw_b1', '事業① ／ サービス') + L('hw_b2', '事業② ／ サービス'), '中長期の<br>ビジネスパートナー<br>になれるか', L('ch4_p_b', 'to B 問題'))}
+    ${row('<div class="fw-node mk">事業③<br>to C</div>', L('hw_c', '事業③ to C ／ サービス'), 'どんな課題の時<br>相談できるか', L('ch4_p_c', 'to C 課題'))}
+  </div></div>`;
+}
 function fieldsHTML(id) {
+  if (id === 'ch4') return afterFW();
   return SHEETS[id].map((g) => `<fieldset><legend class="${g.dark ? 'dk' : ''}">${esc(g.title)}</legend><div class="fgrid" style="grid-template-columns:repeat(${g.cols},minmax(0,1fr))">${g.fields.map((f) => { const v = S.vals[f.key] || ''; return `<label class="fld"><span>${esc(f.label)}</span><textarea data-k="${f.key}" placeholder="${esc(f.ph)}" style="min-height:${f.rows * 20 + 18}px" class="${v.trim() ? 'filled' : ''}">${esc(v)}</textarea></label>`; }).join('')}</div></fieldset>`).join('');
 }
 function centerHTML(x) {
