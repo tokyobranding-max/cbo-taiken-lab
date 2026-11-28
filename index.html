@@ -569,8 +569,12 @@ async function autoSend() {
       body: JSON.stringify({ _subject: mailSubject(), _template: 'box', _captcha: 'false', お名前: nm, 提出日時: S.submittedAt || '', 入力率: stats().rate + '%', 内容: mailBody() }) });
     const j = await r.json().catch(() => ({}));
     if (r.ok && String(j.success) === 'true') { S.sentAt = S.submittedAt; persist(); set('講師に送信しました(' + S.submittedAt + ')。書き足したら、もう一度送信してください。', true); }
-    else throw new Error(j.message || r.status);
-  } catch (err) { set('自動で送れませんでした。下のボタンからメールで送ってください。', false); }
+    else throw new Error(j.message || ('HTTP ' + r.status));
+  } catch (err) {
+    const m = String(err && err.message || err);
+    if (/activat/i.test(m)) set('送信先の有効化がまだです。講師(' + SUBMIT_TO + ')に届いた「Activate Form」メールのボタンを押すと、自動送信が使えるようになります。今回は下のボタンからメールで送ってください。', false);
+    else set('自動で送れませんでした(' + m + ')。下のボタンからメールで送ってください。', false);
+  }
 }
 function mailBoxHTML() {
   const sent = !!S.sentAt;
