@@ -118,6 +118,12 @@ legend.dk{background:#1F1B16;color:#F6F2EA;padding:6px 10px;border:0}
 .gj-col.orig{outline:2px dotted #B0A797;outline-offset:3px;border-radius:6px}
 .gj-col:not(:last-child) .fld textarea{min-height:330px!important}
 .gj-5w .fld>span{min-height:2.9em}
+.gj-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr)) minmax(0,1.25fr);gap:8px 6px;margin-top:10px}
+.gj-ag{font-size:11px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;line-height:1.3;min-height:3.4em}
+.gj-row{grid-column:1/-1;display:grid;grid-template-columns:subgrid;gap:6px;border:1.5px solid #1F1B16;padding:6px;align-items:stretch;background:linear-gradient(90deg,#ECE5D8 0,#ECE5D8 calc(100%/7.25*1),transparent calc(100%/7.25*1))}
+.gj-cell .fld,.gj-cell .fld textarea{height:100%}.gj-cell .fld>span{display:none}.gj-cell textarea{min-height:110px!important}
+.gj-row .gj-v{position:relative;padding-left:4px}.gj-arw{position:absolute;left:-12px;top:50%;transform:translateY(-50%);font-size:14px;color:#5E564C}
+.gj-row .gj-v .fld>span{min-height:2.6em}
 .gj-v{display:flex;flex-direction:column;gap:8px}
 .gj-mid{display:flex;justify-content:space-between;align-items:center;border-top:2px dotted #5E564C;margin:16px 0 8px;padding:0 6%}
 .gj-mid span{font-size:22px;line-height:1;margin-top:-12px;background:#F6F2EA;padding:0 4px}
@@ -142,7 +148,7 @@ legend.dk{background:#1F1B16;color:#F6F2EA;padding:6px 10px;border:0}
 .bm-side{background:#1F1B16;color:#F6F2EA;writing-mode:vertical-rl;text-orientation:upright;font-weight:900;font-size:14px;letter-spacing:.2em;display:flex;align-items:center;justify-content:center;border-radius:6px;padding:10px 0}
 .bm .fld textarea{min-height:96px}
 .bm-n{font-size:20px;font-weight:900;color:#B0A797;line-height:1}
-@media(max-width:760px){.gj-cols{grid-template-columns:repeat(2,minmax(0,1fr))}.gj-col:not(:last-child) .fld textarea{min-height:130px!important}.gj-col:last-child{grid-column:1/-1}.gj-h .t{font-size:14px}.gj-5w{grid-template-columns:repeat(2,minmax(0,1fr))}.gj-mid{display:none}.bf{grid-template-columns:1fr}.bf-br{display:none}.bf-mid,.bf-r{padding:0;margin-top:8px}.bm{grid-template-columns:1fr}.bm-side{writing-mode:horizontal-tb;letter-spacing:.1em}.bm>.sp{display:none}}
+@media(max-width:760px){.gj-cols{grid-template-columns:repeat(2,minmax(0,1fr))}.gj-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.gj-ag{display:none}.gj-row{grid-template-columns:repeat(2,minmax(0,1fr));background:none}.gj-row .gj-v{grid-column:1/-1;order:0}.gj-cell{order:var(--o)}.gj-arw{display:none}.gj-cell .fld>span{display:block;min-height:0}.gj-h .t{font-size:14px}.gj-5w{grid-template-columns:repeat(2,minmax(0,1fr))}.gj-mid{display:none}.bf{grid-template-columns:1fr}.bf-br{display:none}.bf-mid,.bf-r{padding:0;margin-top:8px}.bm{grid-template-columns:1fr}.bm-side{writing-mode:horizontal-tb;letter-spacing:.1em}.bm>.sp{display:none}}
 /* After framework layout */
 .fw{display:flex;flex-direction:column;gap:0}
 .fw-h{background:#1F1B16;color:#F6F2EA;font-size:13px;font-weight:700;padding:6px 10px;text-align:center}
@@ -245,7 +251,9 @@ const SHEETS = {
   ch1: [G('定義シート(3分・直感で)', 2, [F('ch1_brand', 'ブランドとは、', '', 3), F('ch1_branding', 'ブランディングとは、', '', 3)])],
   ch3: [
     G('① 今の価値観(VALUE・現在)— 直感で', 3, [F('ch3_now', '今やっている事'), F('ch3_waku', 'ワクワクする事・熱中する事'), F('ch3_fut', '将来やりたい事')]),
-    G('② なぜ?で遡る(WHY・過去)← 社会人から幼少期へ', 6, [F('ch3_a6', '社会人', '', 4), F('ch3_a5', '高校生', '', 4), F('ch3_a4', '中学生', '', 4), F('ch3_a3', '小学生', '', 4), F('ch3_a2', '保育園・幼稚園', '', 4), F('ch3_a1', '幼少期', '', 4)]),
+    G('② なぜ?で遡る — 今やっている事から(社会人→幼少期)', 6, [F('ch3_a6', '社会人', '', 4), F('ch3_a5', '高校生', '', 4), F('ch3_a4', '中学生', '', 4), F('ch3_a3', '小学生', '', 4), F('ch3_a2', '保育園・幼稚園', '', 4), F('ch3_a1', '幼少期', '', 4)]),
+    G('② なぜ?で遡る — ワクワクする事・熱中する事から(社会人→幼少期)', 6, [F('ch3_w_a6', '社会人', '', 4), F('ch3_w_a5', '高校生', '', 4), F('ch3_w_a4', '中学生', '', 4), F('ch3_w_a3', '小学生', '', 4), F('ch3_w_a2', '保育園・幼稚園', '', 4), F('ch3_w_a1', '幼少期', '', 4)]),
+    G('② なぜ?で遡る — 将来やりたい事から(社会人→幼少期)', 6, [F('ch3_f_a6', '社会人', '', 4), F('ch3_f_a5', '高校生', '', 4), F('ch3_f_a4', '中学生', '', 4), F('ch3_f_a3', '小学生', '', 4), F('ch3_f_a2', '保育園・幼稚園', '', 4), F('ch3_f_a1', '幼少期', '', 4)]),
     G('③ 原体験を5Wで(未来の自分へ一番伝えたいメッセージ)', 3, [F('ch3_when', 'WHEN 何才の時・主人公はダレか', '', 2), F('ch3_why', 'WHY どういう体験・課題/障害', '', 2), F('ch3_what', 'WHAT 過去の自分へのアドバイス・リアルなセリフ', '', 2), F('ch3_who', 'WHO 当時の自分と同じ状況の人・感情', '', 2), F('ch3_where', 'WHERE どこにいる・臨場感', '', 2), F('ch3_how', 'HOW 何を使って伝える', '', 2)])
   ],
   after: [
@@ -316,9 +324,11 @@ function journeyWS() {
   const a = FK('ch3'), L = (k, label) => fldHTML({ ...a[k], label: label == null ? a[k].label : label });
   const ages = [['ch3_a1', '幼少期'], ['ch3_a2', '保育園<br>幼稚園'], ['ch3_a3', '小学生'], ['ch3_a4', '中学生'], ['ch3_a5', '高校生'], ['ch3_a6', '社会人']];
   const w = [['ch3_when', 'WHEN 何才の時', '主人公は<br>ダレか?'], ['ch3_why', 'WHY どういう体験/課題', '課題/障害が<br>ある'], ['ch3_what', 'WHAT 過去の自分/関係者へのアドバイス', 'リアルな<br>セリフがある'], ['ch3_who', 'WHO 当時の自分と同じ状況の人', '感情が<br>ある'], ['ch3_where', 'WHERE どこにいる', '臨場感が<br>ある'], ['ch3_how', 'HOW 何を使って伝える', '未来の自分へ<br>一番伝えたいメッセージ']];
+  const AG = [['1', '幼少期'], ['2', '保育園<br>幼稚園'], ['3', '小学生'], ['4', '中学生'], ['5', '高校生'], ['6', '社会人']];
+  const RW = [['ch3_a', 'ch3_now', '今やっている事'], ['ch3_w_a', 'ch3_waku', 'ワクワクする事・熱中する事'], ['ch3_f_a', 'ch3_fut', '将来やりたい事']];
   return `<div class="ws gj"><div class="gj-h"><span class="ws-chip">WHY(過去)</span><span class="t">◀ 原体験ジャーニー</span><span class="ws-chip">VALUE(現在)</span></div>
-  <div class="gj-cols">${ages.map(([k, l], i) => `<div class="gj-col${i === 0 ? ' orig' : ''}"><b>${l}${i === 0 ? '<span style="color:#BE3A21">原体験</span>' : ''}</b>${L(k, '')}</div>`).join('')}
-  <div class="gj-col"><b>現状</b><div class="gj-v ws-round">${L('ch3_now', '今やっている事')}${L('ch3_waku', 'ワクワクする事・熱中する事')}${L('ch3_fut', '将来やりたい事')}</div></div></div>
+  <div class="gj-grid">${AG.map(([n, l], i) => `<b class="gj-ag${i === 0 ? ' orig' : ''}">${l}${i === 0 ? '<span style="color:#BE3A21">原体験</span>' : ''}</b>`).join('')}<b class="gj-ag">現状</b>
+  ${RW.map(([p, v, vl]) => `<div class="gj-row">${AG.map(([n, l], i) => `<div class="gj-cell${i === 0 ? ' orig' : ''}" style="--o:${6 - i}">${fldHTML({ ...a[p + n], label: l.replace('<br>', '') })}</div>`).join('')}<div class="gj-v ws-round"><span class="gj-arw" aria-hidden="true">◀</span>${L(v, vl)}</div></div>`).join('')}</div>
   <div class="gj-mid" aria-hidden="true"><span>▼</span><span>▲</span></div>
   <div class="gj-5w">${w.map(([k, l, c]) => `<div class="ws-round">${L(k, l)}<div class="ws-chip">${c}</div></div>`).join('')}</div></div>`;
 }
