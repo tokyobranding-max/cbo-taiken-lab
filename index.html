@@ -149,7 +149,8 @@ a.dark.btnlink{background:#1F1B16;color:#F6F2EA}a.light.btnlink{border:1px solid
 .cert-form{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin:18px 0}
 .cert-form label{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:700}
 .cert-form input,.cert-form select{min-height:44px;border:1px solid #B0A797;padding:0 12px;font-size:16px;font-family:inherit;background:#fff}
-.cert-form small{font-weight:400;color:#5E564C;font-size:11px}
+.cert-form small{font-weight:400;color:#5E564C;font-size:11px;line-height:1.5;white-space:normal;overflow-wrap:anywhere}
+.cert-form label{min-width:0}.cert-form input,.cert-form select{width:100%;min-width:0}
 .cert-err{color:#BE3A21;font-size:13px;min-height:1.4em}
 .cert-wrap{overflow:auto;border:1px solid #D6CCBB;background:#ECE5D8;padding:16px;margin-top:12px}
 .cert-scale{width:1123px;transform-origin:top left;margin:0 auto}
@@ -656,16 +657,20 @@ function certDocHTML(c) {
 }
 function certHTML() {
   const c = S.cert || (S.cert = { name: V('ch4_name') ? V('ch4_name').split('\n')[0] : (V('in_name') || ''), first: '', last: '', cohort: '18', course: 'N' });
+  const nmSrc = (V('ch4_name').split('\n')[0] || V('in_name') || '').trim();
+  if (!(c.name || '').trim() && nmSrc) c.name = nmSrc;
+  const lat = nmSrc.match(/^([A-Za-z][A-Za-z'\-]*)\s+([A-Za-z][A-Za-z'\-]*)$/);
+  if (lat && !(c.first || '').trim() && !(c.last || '').trim()) { c.first = lat[1]; c.last = lat[2]; }
   if (COHORTS[c.cohort] && !COHORTS[c.cohort].courses[c.course]) c.course = Object.keys(COHORTS[c.cohort].courses)[0];
   if (c.romaji && !c.first && !c.last) { const p = c.romaji.trim().split(/\s+/); c.first = p[0] || ''; c.last = p.slice(1).join(' '); delete c.romaji; }
   const err = c.tried ? certCheck(c) : [];
   return `<section class="cert-sec" id="cert-sec" aria-labelledby="certTitle"><span class="lbl">送信が済みました</span><h2 id="certTitle">卒業証書を発行する</h2>
   <p class="muted" style="font-size:14px;margin:0">お名前・ローマ字(ファーストネーム／セカンドネーム)・参加期を入れて「発行する」を押すと、卒業証書をPDFと画像で保存できます。証書の年度と修了日は、選んだ期とコースから自動で入ります。</p>
   <div class="cert-form">
-    <label>お名前(漢字)<input id="cert_name" autocomplete="name" value="${esc(c.name)}" placeholder="例: 近池 秀夫"><small>ファイル名と記録に使います</small></label>
+    <label>お名前(漢字)<input id="cert_name" autocomplete="name" value="${esc(c.name)}" placeholder="例: 近池 秀夫"><small>入力済みのお名前が入ります</small></label>
     <label>ファーストネーム<input id="cert_first" autocomplete="given-name" inputmode="latin" lang="en" value="${esc(c.first)}" placeholder="例: Ikuo"><small>頭文字だけ大文字で入ります</small></label>
     <label>セカンドネーム<input id="cert_last" autocomplete="family-name" inputmode="latin" lang="en" value="${esc(c.last)}" placeholder="例: Kikuchi"><small>頭文字だけ大文字で入ります</small></label>
-    <label>参加期<select id="cert_cohort">${Object.keys(COHORTS).map((k) => `<option value="${k}" ${String(c.cohort) === k ? 'selected' : ''}>第${k}期(${COHORTS[k].fy}年度)</option>`).join('')}</select><small>現在発行できるのは第18期です</small></label>
+    <label>参加期<select id="cert_cohort">${Object.keys(COHORTS).map((k) => `<option value="${k}" ${String(c.cohort) === k ? 'selected' : ''}>第${k}期</option>`).join('')}</select><small>${COHORTS[c.cohort] ? COHORTS[c.cohort].fy + '年度' : ''}。現在は第18期のみ</small></label>
     <label>コース<select id="cert_course">${COHORTS[c.cohort] ? Object.entries(COHORTS[c.cohort].courses).map(([k, v]) => `<option value="${k}" ${c.course === k ? 'selected' : ''}>${esc(v.label)}</option>`).join('') : ''}</select><small>現在は通常コースのみです</small></label>
   </div>
   <div class="cert-err" id="certErr" role="alert">${err.map(esc).join(' ／ ')}</div>
