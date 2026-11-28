@@ -125,7 +125,7 @@ legend.dk{background:#1F1B16;color:#F6F2EA;padding:6px 10px;border:0}
 .fw-al .fw-ar{margin-top:0;align-self:center}
 .mail-auto{margin:8px 0 0;padding:12px 14px;background:#ECE5D8;font-size:15px;font-weight:700}
 .mail-auto.ok{background:#E3EEDF;color:#1F4D2B}.mail-auto.ng{background:#F7E1DB;color:#BE3A21}
-.mail-sec{margin-top:24px;border:2px solid #BE3A21;background:#fff;padding:24px 28px}
+.mail-sec{margin:24px 0}
 .mail-sec h2{font-size:22px;font-weight:900;margin:0 0 6px;word-break:break-all}
 .btnlink{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;font-weight:700;font-size:14px;text-decoration:none}
 a.dark.btnlink{background:#1F1B16;color:#F6F2EA}a.light.btnlink{border:1px solid #1F1B16;color:#1F1B16;background:#fff}
@@ -561,24 +561,26 @@ function mailtoURL() { return `mailto:${SUBMIT_TO}?subject=${encodeURIComponent(
 function gmailURL() { return `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(SUBMIT_TO)}&su=${encodeURIComponent(mailSubject())}&body=${encodeURIComponent(mailBody())}`; }
 
 async function autoSend() {
-  const box = $('#mailAuto'); const set = (t, ok) => { if (box) { box.textContent = t; box.className = 'mail-auto ' + (ok === true ? 'ok' : ok === false ? 'ng' : ''); } };
+  const box = $('#mailAuto'); const set = (t, ok) => { if (box) { box.textContent = t; box.className = 'mail-auto ' + (ok === true ? 'ok' : ok === false ? 'ng' : ''); } const k = $('#mailState'); if (k) k.textContent = ok === true ? '送信済み ✓' : ok === false ? 'もう一度送信' : '送信中…'; };
   set('講師(' + SUBMIT_TO + ')に送信しています…');
   try {
     const nm = V('in_name') || V('ch4_name').split('\n')[0] || '';
     const r = await fetch('https://formsubmit.co/ajax/' + SUBMIT_TO, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify({ _subject: mailSubject(), _template: 'box', _captcha: 'false', お名前: nm, 提出日時: S.submittedAt || '', 入力率: stats().rate + '%', 内容: mailBody() }) });
     const j = await r.json().catch(() => ({}));
-    if (r.ok && String(j.success) === 'true') { S.sentAt = S.submittedAt; persist(); set('講師に送信しました(' + S.submittedAt + ')。書き足したら、もう一度「提出する」を押すと再送されます。', true); }
+    if (r.ok && String(j.success) === 'true') { S.sentAt = S.submittedAt; persist(); set('講師に送信しました(' + S.submittedAt + ')。書き足したら、もう一度送信してください。', true); }
     else throw new Error(j.message || r.status);
   } catch (err) { set('自動で送れませんでした。下のボタンからメールで送ってください。', false); }
 }
 function mailBoxHTML() {
-  return `<section class="mail-sec" id="mail-sec" data-no-pdf="1" aria-labelledby="mailTitle"><span class="lbl">提出の送信先</span><h2 id="mailTitle">講師(${SUBMIT_TO})へ送信</h2>
-  <p class="mail-auto ${S.sentAt ? 'ok' : ''}" id="mailAuto" role="status" aria-live="polite">${S.sentAt ? '講師に送信済みです(' + esc(S.sentAt) + ')。書き足したら、もう一度「提出する」を押すと再送されます。' : '「提出する」を押すと、記入内容が自動で講師に送信されます。'}</p>
-  <p class="muted" style="font-size:13px;margin:8px 0 0">自動送信がうまくいかないときは、下のボタンからメールで送れます。</p>
-  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><a class="dark btnlink" href="${esc(mailtoURL())}" id="mailOpen">メールアプリで送る</a><a class="light btnlink" href="${esc(gmailURL())}" target="_blank" rel="noopener">Gmailで送る</a><button class="light" id="mailCopy">本文をコピー</button><span id="mailMsg" class="muted" style="font-size:13px;align-self:center" aria-live="polite"></span></div></section>`;
+  const sent = !!S.sentAt;
+  return `<section class="mail-sec submit" id="mail-sec" data-no-pdf="1" aria-labelledby="mailTitle">
+  <div class="sb"><button class="subbtn" id="mailResend"><span class="k" id="mailState">${sent ? '送信済み ✓' : '講師へ送信'}</span><span class="s">${SUBMIT_TO}</span></button></div>
+  <div class="r" style="flex-direction:column;align-items:stretch;gap:10px"><div><span class="lbl">提出の送信先</span><h2 id="mailTitle" style="margin:2px 0 0">講師(${SUBMIT_TO})へ自動送信</h2></div>
+  <p class="mail-auto ${sent ? 'ok' : ''}" id="mailAuto" role="status" aria-live="polite">${sent ? '講師に送信済みです(' + esc(S.sentAt) + ')。書き足したら、もう一度送信してください。' : '「提出する」を押すと、記入内容が自動で講師に送信されます。'}</p>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span class="muted" style="font-size:13px">うまく送れないときは:</span><a class="light btnlink" href="${esc(mailtoURL())}" id="mailOpen">メールアプリで送る</a><a class="light btnlink" href="${esc(gmailURL())}" target="_blank" rel="noopener">Gmailで送る</a><button class="light" id="mailCopy">本文をコピー</button><span id="mailMsg" class="muted" style="font-size:13px" aria-live="polite"></span></div></div></section>`;
 }
-document.addEventListener('click', (e) => { const a = e.target.closest('#mail-sec a'); if (a) a.href = a.id === 'mailOpen' ? mailtoURL() : gmailURL(); }, true);
+document.addEventListener('click', (e) => { if (e.target.closest('#mailResend')) { autoSend(); return; } const a = e.target.closest('#mail-sec a'); if (a) a.href = a.id === 'mailOpen' ? mailtoURL() : gmailURL(); }, true);
 document.addEventListener('click', async (e) => {
   const b = e.target.closest('button'); if (!b || b.id !== 'mailCopy') return;
   try { await navigator.clipboard.writeText(`宛先: ${SUBMIT_TO}\n件名: ${mailSubject()}\n\n${mailBody()}`); $('#mailMsg').textContent = 'コピーしました。メールに貼り付けて送ってください'; } catch (err) { $('#mailMsg').textContent = 'コピーできませんでした'; }
@@ -659,7 +661,7 @@ document.addEventListener('click', async (e) => {
   if (b.dataset.lay) { const [id, l] = b.dataset.lay.split(':'); S.layout[id] = l; persist(); rerenderCenter(id); return; }
   if (b.dataset.tab) { const [id, t] = b.dataset.tab.split(':'); S.tab[id] = t; persist(); rerenderCenter(id); return; }
   if (b.dataset.save) { const d = new Date(); S.saved[b.dataset.save] = `保存しました ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`; persist(); rerenderCenter(b.dataset.save); return; }
-  if (b.id === 'doSubmit') { const d = new Date(); S.submittedAt = `${d.getFullYear()}.${d.getMonth() + 1}.${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`; persist(); $('#sheetWrap').innerHTML = sheetHTML(stats()) + mailBoxHTML() + certHTML(); certFit(); $('#summary-sheet').scrollIntoView({ block: 'start' }); autoSend(); return; }
+  if (b.id === 'doSubmit') { const d = new Date(); S.submittedAt = `${d.getFullYear()}.${d.getMonth() + 1}.${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`; persist(); $('#sheetWrap').innerHTML = sheetHTML(stats()) + mailBoxHTML() + certHTML(); certFit(); $('#mail-sec').scrollIntoView({ block: 'center', behavior: 'smooth' }); autoSend(); return; }
   if (b.id === 'closeSheet') { S.submittedAt = null; persist(); $('#sheetWrap').innerHTML = ''; return; }
   if (b.id === 'pdfBtn') {
     const msg = $('#pdfMsg'), el = $('#summary-sheet');
