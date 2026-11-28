@@ -380,6 +380,7 @@ const esc = (t) => String(t ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '
 let S = { vals: {}, tab: {}, saved: {}, layout: {}, submittedAt: null };
 try { const r = localStorage.getItem(KEY); if (r) S = Object.assign(S, JSON.parse(r)); } catch (e) {}
 if (!S.layout) S.layout = {};
+if (S.sentAt && S.sentVia !== 'gform') { S.sentAt = null; S.sentHash = null; }
 (() => { const v = S.vals, m = (v.ch4_means || '').split('\n').map((x) => x.trim()).filter(Boolean); if (m.length > 1 && !['ch4_means2', 'ch4_means3', 'ch4_means4', 'ch4_means5'].some((k) => (v[k] || '').trim())) { v.ch4_means = m[0]; ['ch4_means2', 'ch4_means3', 'ch4_means4'].forEach((k, i) => { v[k] = m[i + 1] || ''; }); v.ch4_means5 = m.slice(4).join('\n'); } })();
 let saveT;
 const persist = () => { clearTimeout(saveT); saveT = setTimeout(() => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }, 400); };
@@ -538,7 +539,7 @@ function renderAll() {
   $('#stages').innerHTML = st.list.map((x) => `<article id="${x.s.id}" data-stage="${x.s.id}" class="stage"><div class="rail" data-rail="${x.s.id}">${railHTML(x)}</div><div class="center" data-center="${x.s.id}">${centerHTML(x)}</div><aside class="info ${x.st}" data-info="${x.s.id}">${infoHTML(x)}</aside></article>`).join('');
   $('#submit').innerHTML = submitHTML(st);
   renderSurvey();
-  $('#sheetWrap').innerHTML = S.submittedAt ? sheetHTML(st) + mailBoxHTML() + (S.sentAt ? certHTML() : '') : ''; certFit();
+  $('#sheetWrap').innerHTML = S.submittedAt ? sheetHTML(st) + mailBoxHTML() + (S.sentAt && S.sentVia === 'gform' ? certHTML() : '') : ''; certFit();
   measure();
 }
 function refresh() {
@@ -597,13 +598,13 @@ function mailtoURL() { return `mailto:${SUBMIT_TO}?subject=${encodeURIComponent(
 function gmailURL() { return `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(SUBMIT_TO)}&su=${encodeURIComponent(mailSubject())}&body=${encodeURIComponent(mailBody())}`; }
 
 async function autoSend() {
-  const box = $('#mailAuto'); const set = (t, ok) => { if (box) { box.textContent = t; box.className = 'mail-auto ' + (ok === true ? 'ok' : ok === false ? 'ng' : ''); } const k = $('#mailState'); if (k) k.textContent = ok === true ? '送信済み ✓' : ok === false ? 'もう一度送信' : '送信中…'; };
+  const box = $('#mailAuto'); const set = (t, ok) => { if (box) { box.textContent = t; box.className = 'mail-auto ' + (ok === true ? 'ok' : ok === false ? 'ng' : ''); } const k = $('#mailState'); if (k) { k.textContent = ok === true ? '送信済み ✓' : ok === false ? 'もう一度送信' : '送信中…'; const sb = k.nextElementSibling; if (sb) sb.textContent = ok === true ? SUBMIT_TO : '押すと講師へ送信します'; } };
   set('講師(' + SUBMIT_TO + ')に送信しています…');
   try {
     const nm = V('in_name') || V('ch4_name').split('\n')[0] || '';
     const fd = new URLSearchParams({ 'entry.1700236277': nm, 'entry.942644710': S.submittedAt || '', 'entry.2008958827': stats().rate + '%', 'entry.466771584': mailSubject() + '\n\n' + mailBodyFull(), 'entry.1011724969': satText(), 'entry.225375565': (S.vals.sv_change || '').trim(), 'entry.167788622': (S.vals.sv_improve || '').trim(), 'entry.1389583091': S.vals.sv_case || '', 'entry.648924836': (S.vals.sv_learn || '').trim() });
     await fetch(GFORM, { method: 'POST', mode: 'no-cors', body: fd });
-    S.sentAt = S.submittedAt; persist(); set('講師に送信しました(' + S.submittedAt + ')。書き足したら、もう一度送信してください。', true);
+    S.sentAt = S.submittedAt; S.sentVia = 'gform'; S.sentHash = sendHash(); persist(); set('講師に送信しました(' + S.submittedAt + ')。書き足したら、もう一度送信してください。', true);
     if (!$('#cert-sec')) { $('#mail-sec').insertAdjacentHTML('afterend', certHTML()); certFit(); }
     setTimeout(() => { const cs = $('#cert-sec'); if (cs) cs.scrollIntoView({ block: 'start', behavior: 'smooth' }); }, 900);
   } catch (err) {
@@ -611,12 +612,14 @@ async function autoSend() {
     set('自動で送れませんでした(' + m + ')。下のボタンからメールで送ってください。', false);
   }
 }
+function sendHash() { let h = 0; const t = mailBodyFull() + '|' + (S.cert ? '' : ''); for (const ch of t.replace(/提出日時: .*\n/, '')) h = (h * 31 + ch.codePointAt(0)) >>> 0; return h; }
+function sentFresh() { return !!S.sentAt && S.sentHash === sendHash(); }
 function mailBoxHTML() {
-  const sent = !!S.sentAt;
+  const sent = sentFresh(), stale = !!S.sentAt && !sent;
   return `<section class="mail-sec submit" id="mail-sec" data-no-pdf="1" aria-labelledby="mailTitle">
-  <div class="sb"><button class="subbtn" id="mailResend"><span class="k" id="mailState">${sent ? '送信済み ✓' : '講師へ送信'}</span><span class="s">${SUBMIT_TO}</span></button></div>
+  <div class="sb"><button class="subbtn" id="mailResend"><span class="k" id="mailState">${sent ? '送信済み ✓' : '送信前'}</span><span class="s">${sent ? SUBMIT_TO : '押すと講師へ送信します'}</span></button></div>
   <div class="r" style="flex-direction:column;align-items:stretch;gap:10px"><div><span class="lbl">提出の送信先</span><h2 id="mailTitle" style="margin:2px 0 0">講師(${SUBMIT_TO})へ自動送信</h2></div>
-  <p class="mail-auto ${sent ? 'ok' : ''}" id="mailAuto" role="status" aria-live="polite">${sent ? '講師に送信済みです(' + esc(S.sentAt) + ')。書き足したら、もう一度送信してください。' : '「提出する」を押すと、記入内容が自動で講師に送信されます。'}</p>
+  <p class="mail-auto ${sent ? 'ok' : stale ? 'ng' : ''}" id="mailAuto" role="status" aria-live="polite">${sent ? '講師に送信済みです(' + esc(S.sentAt) + ')。書き足したら、もう一度送信してください。' : stale ? '送信後に書き足した内容があります。左の「送信前」を押すと、最新の内容で送り直します。' : 'まだ講師に送信されていません。'}</p>
   <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span class="muted" style="font-size:13px">うまく送れないときは:</span><a class="light btnlink" href="${esc(mailtoURL())}" id="mailOpen">メールアプリで送る</a><a class="light btnlink" href="${esc(gmailURL())}" target="_blank" rel="noopener">Gmailで送る</a><button class="light" id="mailCopy">本文をコピー</button><span id="mailMsg" class="muted" style="font-size:13px" aria-live="polite"></span></div></div></section>`;
 }
 document.addEventListener('click', (e) => { if (e.target.closest('#mailResend')) { autoSend(); return; } const a = e.target.closest('#mail-sec a'); if (a) a.href = a.id === 'mailOpen' ? mailtoURL() : gmailURL(); }, true);
