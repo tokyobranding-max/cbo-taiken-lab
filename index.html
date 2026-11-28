@@ -103,6 +103,14 @@ legend.dk{background:#1F1B16;color:#F6F2EA;padding:6px 10px;border:0}
 .lay{display:inline-flex;border:1px solid #1F1B16;margin-bottom:12px;align-self:flex-start}
 .lay-b{min-height:36px;padding:0 12px;border:0;background:#fff;font-size:12px;font-weight:700}
 .lay-b[aria-pressed="true"]{background:#1F1B16;color:#F6F2EA}
+/* row alignment via subgrid: labels share a row, boxes share a row */
+.fgrid,.bm,.gj-5w{grid-auto-rows:auto}
+.fgrid>.fld,.bm>.fld{display:grid;grid-row:span 2;grid-template-rows:subgrid;gap:4px;height:auto}
+.fgrid>.fld>span,.bm>.fld>span{min-height:0!important;align-self:end}
+.fgrid>.fld>textarea,.bm>.fld>textarea{margin-top:0;align-self:stretch;height:auto}
+.bm>.ws-chip,.bm>.sp{grid-row:span 1}.bm>.bm-side{grid-row:span 2}
+.gj-5w>div{display:grid;grid-row:span 3;grid-template-rows:subgrid;gap:6px}
+.gj-5w>div>.fld{display:contents}.gj-5w .fld>span{min-height:0!important;align-self:end}.gj-5w textarea{align-self:stretch;height:auto}
 /* worksheet layouts */
 .ws-bar{background:#1F1B16;color:#F6F2EA;font-size:13px;font-weight:700;padding:6px 10px;text-align:center}
 .ws .fld span{min-height:0}.ws .fld{height:auto}.ws .fld textarea{margin-top:0}
@@ -117,7 +125,6 @@ legend.dk{background:#1F1B16;color:#F6F2EA;padding:6px 10px;border:0}
 .gj-col>b{font-size:11px;text-align:center;min-height:3.4em;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;line-height:1.3}
 .gj-col.orig{outline:2px dotted #B0A797;outline-offset:3px;border-radius:6px}
 .gj-col:not(:last-child) .fld textarea{min-height:330px!important}
-.gj-5w .fld>span{min-height:2.9em}
 .gj-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr)) minmax(0,1.25fr);gap:8px 6px;margin-top:10px}
 .gj-ag{font-size:11px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;line-height:1.3;min-height:3.4em}
 .gj-row{grid-column:1/-1;display:grid;grid-template-columns:subgrid;gap:6px;border:1.5px solid #1F1B16;padding:6px;align-items:stretch;background:linear-gradient(90deg,#ECE5D8 0,#ECE5D8 calc(100%/7.25*1),transparent calc(100%/7.25*1))}
@@ -128,16 +135,12 @@ legend.dk{background:#1F1B16;color:#F6F2EA;padding:6px 10px;border:0}
 .gj-row .gj-v .fld{flex:1;display:flex;flex-direction:column}.gj-row .gj-v .fld textarea{flex:1;min-height:110px!important}
 .gj-row .gj-v .fld>span{min-height:2.8em!important;display:flex;align-items:flex-end}
 .gj-cell{display:flex;flex-direction:column;justify-content:flex-end}
-.bm .fld>span{min-height:2.9em!important}
 .gj-5w .ws-chip{min-height:64px}
-.bm .fld{display:flex;flex-direction:column;height:100%}.bm .fld textarea{flex:1}
-.gj-5w>div>.fld{flex:1;display:flex;flex-direction:column}.gj-5w .fld textarea{flex:1}
 .fw-out .fld>span,.fw-in .fld>span{min-height:0}
 .gj-v{display:flex;flex-direction:column;gap:8px}
 .gj-mid{display:flex;justify-content:space-between;align-items:center;border-top:2px dotted #5E564C;margin:16px 0 8px;padding:0 6%}
 .gj-mid span{font-size:22px;line-height:1;margin-top:-12px;background:#F6F2EA;padding:0 4px}
 .gj-5w{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
-.gj-5w>div{display:flex;flex-direction:column;gap:6px}
 /* Before */
 .bf{display:grid;grid-template-columns:150px 18px minmax(0,1fr) minmax(0,1.2fr) minmax(0,.9fr);gap:0 0;align-items:start;margin-top:12px}
 .bf-l{display:flex;flex-direction:column;gap:8px;align-items:stretch}
@@ -494,7 +497,7 @@ document.addEventListener('click', async (e) => {
   }
 });
 
-function fitTA(el) { el.style.height = 'auto'; el.style.height = (el.scrollHeight + 2) + 'px'; }
+function fitTA(el) { if (!el.dataset.base) el.dataset.base = parseFloat(el.style.minHeight) || 40; el.style.height = 'auto'; el.style.minHeight = '0px'; const h = Math.max(+el.dataset.base, el.scrollHeight + 2); el.style.height = ''; el.style.minHeight = h + 'px'; }
 function fitAll(root) { (root || document).querySelectorAll('.fld textarea').forEach(fitTA); }
 new MutationObserver((ms) => { for (const m of ms) for (const n of m.addedNodes) if (n.nodeType === 1) fitAll(n.matches && n.matches('.fld textarea') ? n.parentNode : n); }).observe(document.body, { childList: true, subtree: true });
 window.addEventListener('resize', () => fitAll());
