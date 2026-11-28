@@ -117,6 +117,8 @@ legend.dk{background:#1F1B16;color:#F6F2EA;padding:6px 10px;border:0}
 .fw-sub .fld>span{align-self:end;margin-top:14px}
 .fw-sub .fld>textarea{align-self:stretch;height:auto}
 .fw-qc.fw-sub .fld>span{display:none}
+.fw-qc.fw-sub>.fld>textarea,.fw-out.fw-sub>.fld>textarea{grid-row:2 / -1}
+.fw-qc.fw-sub>.fw-q{grid-row:1}
 .fw-qc.fw-sub .fw-q{align-self:end;margin-top:14px;min-height:0;padding:8px 18px}
 .fw-out.fw-sub .fld>span{align-self:end;justify-self:start}
 .fw-nodew{display:flex;align-items:center}.fw-nodew>.fw-node{flex:1;align-self:center}
@@ -403,7 +405,7 @@ function afterFW() {
   const row = (node, ins, q, out) => {
     const n = ins.length * 2, g = (c, span, cls, html, st) => `<div class="${cls}" style="grid-column:${c};grid-row:${r} / span ${span};${st || ''}">${html}</div>`;
     r++; const h0 = g(1, 1, 'fw-nodew', node) + g(2, 1, 'fw-ar', '', ''); r--;
-    const h = h0 + g(3, n, 'fw-in fw-sub', ins.map(([k, l]) => L(k, l)).join('')) + g(4, 2, 'fw-qc fw-sub', `<div class="fw-q">${q[0]}</div>${fldHTML({ ...all[q[1]], label: '' })}`) + g(5, 2, 'fw-out fw-sub', L(out[0], out[1]));
+    const h = h0 + g(3, n, 'fw-in fw-sub', ins.map(([k, l]) => L(k, l)).join('')) + g(4, n, 'fw-qc fw-sub', `<div class="fw-q">${q[0]}</div>${fldHTML({ ...all[q[1]], label: '' })}`) + g(5, n, 'fw-out fw-sub', L(out[0], out[1]));
     r += n; return h;
   };
   const body = row(`<div class="fw-node">${nm ? esc(nm) : '名前'}</div>`, [['ch4_artist', 'アーティスト:自分が大事にしたい思想']], ['自分の世界観を<br>深める/伝える', 'ch4_q_world'], ['ch4_p_world', 'to 世界問題'])
