@@ -103,7 +103,7 @@ legend.dk{background:#1F1B16;color:#F6F2EA;padding:6px 10px;border:0}
 /* After framework layout */
 .fw{display:flex;flex-direction:column;gap:0}
 .fw-h{background:#1F1B16;color:#F6F2EA;font-size:13px;font-weight:700;padding:6px 10px;text-align:center}
-.fw-cols{display:grid;grid-template-columns:96px 18px minmax(0,1.35fr) 150px minmax(0,1fr);gap:10px 0;align-items:stretch;margin-top:14px}
+.fw-cols{display:grid;grid-template-columns:96px 18px minmax(0,1.2fr) minmax(150px,.8fr) minmax(0,1fr);gap:10px 0;align-items:stretch;margin-top:14px}
 .fw-colh{font-size:11px;font-weight:700;color:#5E564C;padding-bottom:2px}
 .fw-node{display:flex;align-items:center;justify-content:center;text-align:center;font-size:13px;font-weight:700;border:2px solid #B0A797;background:#fff;color:#5E564C;padding:6px;min-height:44px;align-self:start}
 .fw-node.blk{background:#1F1B16;border-color:#1F1B16;color:#F6F2EA;font-weight:900}
@@ -114,6 +114,7 @@ legend.dk{background:#1F1B16;color:#F6F2EA;padding:6px 10px;border:0}
 .fw-in .fld span,.fw-out .fld span{min-height:0}
 .fw-q{display:flex;align-items:center;justify-content:center;text-align:center;font-size:11px;font-weight:700;line-height:1.4;color:#5E564C;background:#ECE5D8;padding:10px 18px;clip-path:polygon(0 50%,14px 0,calc(100% - 14px) 0,100% 50%,calc(100% - 14px) 100%,14px 100%);align-self:start;min-height:56px}
 .fw-out{padding-left:12px}
+.fw-qc{display:flex;flex-direction:column;gap:6px;align-self:start}.fw-qc .fld>span{display:none}.fw-qc .fw-q{min-height:48px;align-self:stretch}
 .fw-out .fld>span{display:inline-block;align-self:flex-start;font-size:13px;font-weight:900;color:#1F1B16;border:2px solid #1F1B16;border-radius:8px;padding:2px 10px;margin-bottom:2px}
 .fw .fld{height:auto}.fw .fld textarea{margin-top:0}
 @media(max-width:760px){.fw-cols{grid-template-columns:1fr}.fw-ar,.fw-colh{display:none}.fw-node.mk{flex-direction:row;gap:4px}.fw-node.mk br{display:none}.fw-in,.fw-out{padding:0}.fw-q{clip-path:none;justify-content:flex-start}.fw-node{justify-content:flex-start}}
@@ -217,7 +218,8 @@ const SHEETS = {
   ch4: [
     G('After(ライスワークとライフワークの区別がつけられる)', 2, [F('ch4_artist', 'アーティスト:自分が大事にしたい思想', '世界のどんな課題を解決したいか', 2), F('ch4_corp', '法人名/個人事業主名/法人名の仮', 'どんな社会問題を解決するか', 2)], true),
     G('事業とサービス', 3, [F('hw_b1', '市場 to B:事業①とサービス', 'どんな企業・市場の問題を解決したいか', 3), F('hw_b2', '市場 to B:事業②とサービス', '', 3), F('hw_c', '事業③ to C とサービス', 'どんな人の課題を解決したいか', 3)]),
-    G('誰の、どんな問題を解決するか', 4, [F('ch4_p_world', 'to 世界問題', '自分の世界観を深める/伝える', 2), F('ch4_p_soc', 'to 社会問題', 'なぜ社会に存在するか', 2), F('ch4_p_b', 'to B問題', '中長期のビジネスパートナーになれるか', 2), F('ch4_p_c', 'to C課題', 'どんな課題の時に相談できるか', 2)])
+    G('誰の、どんな問題を解決するか', 4, [F('ch4_p_world', 'to 世界問題', '自分の世界観を深める/伝える', 2), F('ch4_p_soc', 'to 社会問題', 'なぜ社会に存在するか', 2), F('ch4_p_b', 'to B問題', '中長期のビジネスパートナーになれるか', 2), F('ch4_p_c', 'to C課題', 'どんな課題の時に相談できるか', 2)]),
+    G('問い', 4, [F('ch4_q_world', '自分の世界観を深める/伝える', '', 2), F('ch4_q_soc', 'なぜ社会に存在するか', '', 2), F('ch4_q_b', '中長期のビジネスパートナーになれるか', '', 2), F('ch4_q_c', 'どんな課題の時相談できるか', '', 2)])
   ],
   driveout: [G('ドライブアウト(振り返り)', 3, [F('out_feel', '今日の感想/質問', '', 3), F('out_ask', '今日生まれた問い', '', 3), F('out_vibe', '今日一番、バイブスが生まれた瞬間', '', 3)])],
   homework: [G('宿題(DAY2で共有)', 2, [F('hw_thought', '思想・感性(自分の究極の思想)', '例:仕事ができる人を世界で増やす', 3), F('hw_corp_final', '仮の法人名(決定版)', '', 3), F('hw_share', 'DAY2で共有したいこと', '', 3), F('hw_1on1', '1on1で相談したいこと(任意)', '', 3)], true)]
@@ -269,14 +271,14 @@ function afterFW() {
   const all = {}; SHEETS.ch4.forEach((g) => g.fields.forEach((f) => { all[f.key] = f; }));
   const L = (k, label) => fldHTML({ ...all[k], label: label || all[k].label });
   const nm = (S.vals.ch4_name || '').trim().split('\n')[0];
-  const row = (node, inner, q, out) => `${node}<div class="fw-ar" aria-hidden="true"></div><div class="fw-in">${inner}</div><div class="fw-q">${q}</div><div class="fw-out">${out}</div>`;
+  const row = (node, inner, q, out) => `${node}<div class="fw-ar" aria-hidden="true"></div><div class="fw-in">${inner}</div><div class="fw-qc"><div class="fw-q">${q[0]}</div>${fldHTML({ ...all[q[1]], label: '' })}</div><div class="fw-out">${out}</div>`;
   return `<div class="fw"><div class="fw-h">After(ライスワークとライフワークの区別がつけられる)</div>
   <div class="fw-cols">
     <div class="fw-colh x"></div><div class="fw-colh x"></div><div class="fw-colh">書く</div><div class="fw-colh x" style="text-align:center">問い</div><div class="fw-colh" style="padding-left:12px">誰の、どんな問題を解決するか</div>
-    ${row(`<div class="fw-node">${nm ? esc(nm) : '名前'}</div>`, L('ch4_artist', 'アーティスト:自分が大事にしたい思想'), '自分の世界観を<br>深める/伝える', L('ch4_p_world', 'to 世界問題'))}
-    ${row('<div class="fw-node blk">法人化</div>', L('ch4_corp', '法人:法人名/個人事業主名/法人名の仮'), 'なぜ社会に<br>存在するか', L('ch4_p_soc', 'to 社会問題'))}
-    ${row('<div class="fw-node mk">市場<br>to B</div>', L('hw_b1', '事業① ／ サービス') + L('hw_b2', '事業② ／ サービス'), '中長期の<br>ビジネスパートナー<br>になれるか', L('ch4_p_b', 'to B 問題'))}
-    ${row('<div class="fw-node mk">事業③<br>to C</div>', L('hw_c', '事業③ to C ／ サービス'), 'どんな課題の時<br>相談できるか', L('ch4_p_c', 'to C 課題'))}
+    ${row(`<div class="fw-node">${nm ? esc(nm) : '名前'}</div>`, L('ch4_artist', 'アーティスト:自分が大事にしたい思想'), ['自分の世界観を<br>深める/伝える', 'ch4_q_world'], L('ch4_p_world', 'to 世界問題'))}
+    ${row('<div class="fw-node blk">法人化</div>', L('ch4_corp', '法人:法人名/個人事業主名/法人名の仮'), ['なぜ社会に<br>存在するか', 'ch4_q_soc'], L('ch4_p_soc', 'to 社会問題'))}
+    ${row('<div class="fw-node mk">市場<br>to B</div>', L('hw_b1', '事業① ／ サービス') + L('hw_b2', '事業② ／ サービス'), ['中長期の<br>ビジネスパートナー<br>になれるか', 'ch4_q_b'], L('ch4_p_b', 'to B 問題'))}
+    ${row('<div class="fw-node mk">事業③<br>to C</div>', L('hw_c', '事業③ to C ／ サービス'), ['どんな課題の時<br>相談できるか', 'ch4_q_c'], L('ch4_p_c', 'to C 課題'))}
   </div></div>`;
 }
 function fieldsHTML(id) {
