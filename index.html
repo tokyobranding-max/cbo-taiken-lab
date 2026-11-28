@@ -123,6 +123,36 @@ legend.dk{background:#1F1B16;color:#F6F2EA;padding:6px 10px;border:0}
 .fw-out.fw-sub .fld>span{align-self:end;justify-self:start}
 .fw-nodew{display:flex;align-items:center}.fw-nodew>.fw-node{flex:1;align-self:center}
 .fw-al .fw-ar{margin-top:0;align-self:center}
+/* 卒業証書 */
+.cert-sec{margin-top:40px;border:2px solid #1F1B16;background:#fff;padding:28px}
+.cert-sec h2{font-size:24px;font-weight:900;margin:0 0 6px}
+.cert-form{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:18px 0}
+.cert-form label{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:700}
+.cert-form input,.cert-form select{min-height:44px;border:1px solid #B0A797;padding:0 12px;font-size:16px;font-family:inherit;background:#fff}
+.cert-form small{font-weight:400;color:#5E564C;font-size:11px}
+.cert-err{color:#BE3A21;font-size:13px;min-height:1.4em}
+.cert-wrap{overflow:auto;border:1px solid #D6CCBB;background:#ECE5D8;padding:16px;margin-top:12px}
+.cert-scale{width:1123px;transform-origin:top left;margin:0 auto}
+#certDoc{width:1123px;height:794px;background:#FBF8F2;position:relative;color:#1F1B16;font-family:'Noto Serif JP',serif;box-sizing:border-box;padding:34px}
+#certDoc .f1{position:absolute;inset:22px;border:3px solid #1F1B16}
+#certDoc .f2{position:absolute;inset:32px;border:1px solid #BE3A21}
+#certDoc .in{position:relative;height:100%;display:flex;flex-direction:column;align-items:center;text-align:center;padding:36px 70px 30px}
+#certDoc .sch{font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:700;letter-spacing:.3em;color:#BE3A21}
+#certDoc h3{font-size:58px;font-weight:700;letter-spacing:.4em;margin:10px 0 0 .4em;line-height:1.2}
+#certDoc .en{font-family:'Noto Sans JP',sans-serif;font-size:13px;letter-spacing:.42em;font-weight:700;color:#5E564C;margin-top:4px}
+#certDoc .nm{margin-top:26px;font-size:38px;font-weight:700;border-bottom:1.5px solid #1F1B16;padding:0 40px 4px;min-width:420px}
+#certDoc .nm small{font-size:20px;margin-left:12px}
+#certDoc .ro{font-family:'Noto Sans JP',sans-serif;font-size:16px;letter-spacing:.2em;font-weight:700;margin-top:8px}
+#certDoc .tx{font-size:17px;line-height:2;margin-top:18px;max-width:820px}
+#certDoc .txe{font-family:'Noto Sans JP',sans-serif;font-size:12.5px;line-height:1.7;color:#5E564C;margin-top:8px;max-width:820px}
+#certDoc .bt{margin-top:auto;width:100%;display:flex;justify-content:space-between;align-items:flex-end;font-family:'Noto Sans JP',sans-serif;text-align:left}
+#certDoc .bt .d{font-size:13px;line-height:1.7}
+#certDoc .bt .d b{font-family:'Noto Serif JP',serif;font-size:17px}
+#certDoc .bt .sg{text-align:right;font-size:12px;line-height:1.6}
+#certDoc .bt .sg b{font-family:'Noto Serif JP',serif;font-size:20px;display:block}
+#certDoc .seal{width:96px;height:96px;white-space:nowrap;letter-spacing:-.02em;border:3px solid #BE3A21;color:#BE3A21;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif JP',serif;font-size:11px;font-weight:700;line-height:1.35;text-align:center;transform:rotate(-8deg);margin-left:16px}
+#certDoc .no{position:absolute;top:6px;right:8px;font-family:'Noto Sans JP',sans-serif;font-size:10px;color:#5E564C;letter-spacing:.1em}
+@media(max-width:760px){.cert-form{grid-template-columns:1fr}.cert-sec{padding:18px}}
 /* worksheet layouts */
 .ws-bar{background:#1F1B16;color:#F6F2EA;font-size:13px;font-weight:700;padding:6px 10px;text-align:center}
 .ws .fld span{min-height:0}.ws .fld{height:auto}.ws .fld textarea{margin-top:0}
@@ -485,7 +515,7 @@ function renderAll() {
   $('#progLbl').textContent = `PROGRESS · ${st.nowIdx < 0 ? STAGES.length : st.nowIdx + 1} / ${STAGES.length} · 下にスクロールすると、左の線が進みます`;
   $('#stages').innerHTML = st.list.map((x) => `<article id="${x.s.id}" data-stage="${x.s.id}" class="stage"><div class="rail" data-rail="${x.s.id}">${railHTML(x)}</div><div class="center" data-center="${x.s.id}">${centerHTML(x)}</div><aside class="info ${x.st}" data-info="${x.s.id}">${infoHTML(x)}</aside></article>`).join('');
   $('#submit').innerHTML = submitHTML(st);
-  $('#sheetWrap').innerHTML = S.submittedAt ? sheetHTML(st) : '';
+  $('#sheetWrap').innerHTML = S.submittedAt ? sheetHTML(st) + certHTML() : ''; certFit();
   measure();
 }
 function refresh() {
@@ -506,12 +536,85 @@ function rerenderCenter(id) {
   $(`[data-center="${id}"]`).innerHTML = centerHTML(x);
 }
 
+
+/* ===== 卒業証書 ===== */
+// 期ごとの年度・修了日。新しい期はここに追加する(年度は4月始まり)。
+const COHORTS = {
+  18: { fy: 2026, wareki: '令和8年度', courses: {
+    A: { label: 'Aコース(DAY1 11/14・DAY2 11/28)', done: [2026, 11, 28] },
+    B: { label: 'Bコース(DAY1 11/21・DAY2 12/5)', done: [2026, 12, 5] } } }
+};
+const ORD = (n) => { const v = n % 100; return n + ((v >= 11 && v <= 13) ? 'th' : ({ 1: 'st', 2: 'nd', 3: 'rd' }[n % 10] || 'th')); };
+const MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const REIWA = (y) => `令和${y - 2018}年`;
+function fyOf(y, m) { return m >= 4 ? y : y - 1; }
+function normRomaji(r) { return (r || '').normalize('NFC').trim().replace(/\s+/g, ' ').toLowerCase().replace(/(^|[\s\-'])([a-zà-ž])/g, (m, a, b) => a + b.toUpperCase()); }
+function certCheck(c) {
+  const e = [];
+  if (!(c.name || '').trim()) e.push('お名前を入力してください');
+  if (!(c.romaji || '').trim()) e.push('ローマ字を入力してください');
+  else if (!/^[A-Za-zÀ-ÿĀ-ž][A-Za-zÀ-ÿĀ-ž' .\-]*[A-Za-zÀ-ÿĀ-ž.]$/.test(c.romaji.trim())) e.push('ローマ字は半角英字で入力してください(例: Hideo Chikaike)');
+  const co = COHORTS[c.cohort]; if (!co) e.push('参加期を選んでください');
+  else if (!co.courses[c.course]) e.push('コースを選んでください');
+  else { const [y, m] = co.courses[c.course].done; if (fyOf(y, m) !== co.fy) e.push('期の年度設定に誤りがあります(管理者に連絡してください)'); }
+  return e;
+}
+function certNo(c) { let h = 0; for (const ch of `${c.name}|${normRomaji(c.romaji)}|${c.cohort}|${c.course}`) h = (h * 31 + ch.codePointAt(0)) >>> 0; return `CBO-${COHORTS[c.cohort].fy}-${String(c.cohort).padStart(2, '0')}${c.course}-${String(h % 10000).padStart(4, '0')}`; }
+function certDocHTML(c) {
+  const co = COHORTS[c.cohort], cs = co.courses[c.course], [y, m, d] = cs.done, ro = normRomaji(c.romaji);
+  return `<div id="certDoc"><div class="f1"></div><div class="f2"></div><div class="in">
+  <div class="no">No. ${esc(certNo(c))}</div>
+  <div class="sch">東京ブランディング大学校　CBO育成講座</div>
+  <h3>卒業証書</h3><div class="en">CERTIFICATE OF COMPLETION</div>
+  <div class="nm">${esc(c.name.trim())}<small>殿</small></div><div class="ro">${esc(ro.toUpperCase())}</div>
+  <p class="tx">あなたは東京ブランディング大学校 CBO育成講座<br>第${c.cohort}期(${co.fy}年度)の全課程を修了されました。<br>原体験から自らの思想を言葉にし、ブランドとして社会に届ける力を<br>身につけたことを、ここに証します。</p>
+  <p class="txe">This is to certify that <b>${esc(ro)}</b> has successfully completed all requirements of<br>the CBO (Chief Branding Officer) Development Course, ${ORD(+c.cohort)} Cohort (Academic Year ${co.fy}), at Tokyo Branding School.</p>
+  <div class="bt"><div class="d">修了日<br><b>${y}年${m}月${d}日</b>(${REIWA(y)}${m}月${d}日)<br>Date of Completion: ${MON[m - 1]} ${d}, ${y}<br>第${c.cohort}期 ${esc(cs.label.split('(')[0])} ／ ${co.fy}年度(${co.wareki})</div>
+  <div style="display:flex;align-items:flex-end"><div class="sg">東京ブランディング大学校 / Tokyo Branding School<b>講師　チカイケ秀夫</b>Hideo Chikaike, Instructor</div><div class="seal">東京<br>ブランディング<br>大学校</div></div></div>
+  </div></div>`;
+}
+function certHTML() {
+  const c = S.cert || (S.cert = { name: V('ch4_name') ? V('ch4_name').split('\n')[0] : (V('in_name') || ''), romaji: '', cohort: '18', course: '' });
+  const err = c.tried ? certCheck(c) : [];
+  return `<section class="cert-sec" id="cert-sec" aria-labelledby="certTitle"><span class="lbl">提出のあと</span><h2 id="certTitle">卒業証書を発行する</h2>
+  <p class="muted" style="font-size:14px;margin:0">お名前・ローマ字・参加期を入れて「発行する」を押すと、卒業証書をPDFと画像で保存できます。証書の年度と修了日は、選んだ期とコースから自動で入ります。</p>
+  <div class="cert-form">
+    <label>お名前(漢字)<input id="cert_name" autocomplete="name" value="${esc(c.name)}" placeholder="例: 近池 秀夫"><small>証書に大きく入ります</small></label>
+    <label>ローマ字<input id="cert_romaji" autocomplete="off" inputmode="latin" lang="en" value="${esc(c.romaji)}" placeholder="例: Hideo Chikaike"><small>名・姓の順。英文の証明文に入ります</small></label>
+    <label>参加期<select id="cert_cohort">${Object.keys(COHORTS).map((k) => `<option value="${k}" ${String(c.cohort) === k ? 'selected' : ''}>第${k}期(${COHORTS[k].fy}年度)</option>`).join('')}</select><small>現在発行できるのは第18期です</small></label>
+    <label>コース<select id="cert_course"><option value="">選んでください</option>${COHORTS[c.cohort] ? Object.entries(COHORTS[c.cohort].courses).map(([k, v]) => `<option value="${k}" ${c.course === k ? 'selected' : ''}>${esc(v.label)}</option>`).join('') : ''}</select><small>修了日(DAY2の日付)が変わります</small></label>
+  </div>
+  <div class="cert-err" id="certErr" role="alert">${err.map(esc).join(' ／ ')}</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><button class="dark" id="certIssue">発行する(PDF)</button><button class="light" id="certPng">画像で保存(PNG)</button><span id="certMsg" class="muted" style="font-size:13px" aria-live="polite"></span></div>
+  <div class="cert-wrap"><div class="cert-scale" id="certScale">${certCheck(c).length ? '<div style="width:1123px;height:200px;display:flex;align-items:center;justify-content:center;color:#5E564C">入力すると、ここに証書のプレビューが出ます</div>' : certDocHTML(c)}</div></div>
+  </section>`;
+}
+function certFit() { const w = $('.cert-wrap'), sc = $('#certScale'); if (!w || !sc) return; const k = Math.min(1, (w.clientWidth - 32) / 1123); sc.style.transform = `scale(${k})`; sc.style.height = (794 * k) + 'px'; sc.style.width = 1123 + 'px'; sc.parentElement.style.height = ''; }
+function certRefresh() { const sec = $('#cert-sec'); if (!sec) return; const st = document.activeElement && document.activeElement.id; const pos = document.activeElement && document.activeElement.selectionStart; sec.outerHTML = certHTML(); certFit(); if (st) { const el = document.getElementById(st); if (el) { el.focus(); if (pos != null && el.setSelectionRange) try { el.setSelectionRange(pos, pos); } catch (e) {} } } }
+document.addEventListener('input', (e) => { const id = e.target.id; if (!/^cert_/.test(id)) return; S.cert = S.cert || {}; const k = id.slice(5); S.cert[k] = e.target.value; if (k === 'cohort') S.cert.course = ''; persist(); if (k === 'cohort' || k === 'course') certRefresh(); else { const ok = !certCheck(S.cert).length; const sc = $('#certScale'); if (sc && ok) { sc.innerHTML = certDocHTML(S.cert); certFit(); } if (S.cert.tried) $('#certErr').textContent = certCheck(S.cert).join(' ／ '); } });
+document.addEventListener('change', (e) => { if (/^cert_(cohort|course)$/.test(e.target.id)) { S.cert[e.target.id.slice(5)] = e.target.value; if (e.target.id === 'cert_cohort') S.cert.course = ''; persist(); certRefresh(); } });
+window.addEventListener('resize', certFit);
+async function certCanvas() { await (document.fonts ? document.fonts.ready : Promise.resolve()); const el = $('#certDoc'); const sc = $('#certScale'); const t = sc.style.transform; sc.style.transform = 'none'; try { return await window.html2canvas(el, { scale: 2, backgroundColor: '#FBF8F2' }); } finally { sc.style.transform = t; } }
+document.addEventListener('click', async (e) => {
+  const b = e.target.closest('button'); if (!b || !/^cert(Issue|Png)$/.test(b.id)) return;
+  S.cert.tried = true; persist(); const er = certCheck(S.cert);
+  if (er.length) { certRefresh(); $('#certErr').scrollIntoView({ block: 'center' }); return; }
+  S.cert.romaji = normRomaji(S.cert.romaji); persist(); certRefresh();
+  const msg = $('#certMsg'); if (!window.html2canvas || !window.jspdf) { msg.textContent = '保存できませんでした'; return; }
+  msg.textContent = '作成中…';
+  try {
+    const cv = await certCanvas(), fn = `卒業証書_CBO育成講座第${S.cert.cohort}期_${S.cert.name.trim()}`;
+    if (b.id === 'certPng') { const a = document.createElement('a'); a.href = cv.toDataURL('image/png'); a.download = fn + '.png'; a.click(); }
+    else { const pdf = new window.jspdf.jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' }); pdf.addImage(cv.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, 297, 210); pdf.save(fn + '.pdf'); }
+    S.cert.issuedAt = new Date().toISOString(); persist(); msg.textContent = '発行しました(No. ' + certNo(S.cert) + ')';
+  } catch (err) { msg.textContent = '保存できませんでした'; }
+});
 document.addEventListener('click', async (e) => {
   const b = e.target.closest('button'); if (!b) return;
   if (b.dataset.lay) { const [id, l] = b.dataset.lay.split(':'); S.layout[id] = l; persist(); rerenderCenter(id); return; }
   if (b.dataset.tab) { const [id, t] = b.dataset.tab.split(':'); S.tab[id] = t; persist(); rerenderCenter(id); return; }
   if (b.dataset.save) { const d = new Date(); S.saved[b.dataset.save] = `保存しました ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`; persist(); rerenderCenter(b.dataset.save); return; }
-  if (b.id === 'doSubmit') { const d = new Date(); S.submittedAt = `${d.getFullYear()}.${d.getMonth() + 1}.${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`; persist(); $('#sheetWrap').innerHTML = sheetHTML(stats()); $('#summary-sheet').scrollIntoView({ block: 'start' }); return; }
+  if (b.id === 'doSubmit') { const d = new Date(); S.submittedAt = `${d.getFullYear()}.${d.getMonth() + 1}.${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`; persist(); $('#sheetWrap').innerHTML = sheetHTML(stats()) + certHTML(); certFit(); $('#summary-sheet').scrollIntoView({ block: 'start' }); return; }
   if (b.id === 'closeSheet') { S.submittedAt = null; persist(); $('#sheetWrap').innerHTML = ''; return; }
   if (b.id === 'pdfBtn') {
     const msg = $('#pdfMsg'), el = $('#summary-sheet');
