@@ -100,6 +100,49 @@ legend.dk{background:#1F1B16;color:#F6F2EA;padding:6px 10px;border:0}
 .fld span{font-size:11px;font-weight:700;line-height:1.4;min-height:2.8em}
 .fld textarea{width:100%;margin-top:auto;resize:none;overflow:hidden;border:1px solid #B0A797;border-radius:2px;background:#F6F2EA;padding:6px 8px;font:400 13px/1.5 'Noto Sans JP',sans-serif;color:#1F1B16}
 .fld textarea.filled{border-color:#1F1B16;background:#fff}
+.lay{display:inline-flex;border:1px solid #1F1B16;margin-bottom:12px;align-self:flex-start}
+.lay-b{min-height:36px;padding:0 12px;border:0;background:#fff;font-size:12px;font-weight:700}
+.lay-b[aria-pressed="true"]{background:#1F1B16;color:#F6F2EA}
+/* worksheet layouts */
+.ws-bar{background:#1F1B16;color:#F6F2EA;font-size:13px;font-weight:700;padding:6px 10px;text-align:center}
+.ws .fld span{min-height:0}.ws .fld{height:auto}.ws .fld textarea{margin-top:0}
+.ws-chip{display:flex;align-items:center;justify-content:center;background:#1F1B16;color:#F6F2EA;font-size:12px;font-weight:700;line-height:1.35;text-align:center;padding:8px 6px;border-radius:6px}
+.ws-round textarea{border-radius:12px!important;border-width:2px!important}
+.ws-tag .fld>span{display:inline-block;align-self:flex-start;font-size:13px;font-weight:900;color:#1F1B16;border:2px solid #1F1B16;border-radius:8px;padding:2px 10px}
+/* 原体験ジャーニー */
+.gj-h{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px}
+.gj-h .t{text-align:center;font-size:18px;font-weight:900;letter-spacing:.04em;border-bottom:2px dotted #5E564C;line-height:1.2;padding-bottom:4px}
+.gj-cols{display:grid;grid-template-columns:repeat(6,minmax(0,1fr)) minmax(0,1.25fr);gap:8px;margin-top:10px}
+.gj-col{display:flex;flex-direction:column;gap:4px}
+.gj-col>b{font-size:11px;text-align:center;min-height:3.4em;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;line-height:1.3}
+.gj-col.orig{outline:2px dotted #B0A797;outline-offset:3px;border-radius:6px}
+.gj-col:not(:last-child) .fld textarea{min-height:330px!important}
+.gj-5w .fld>span{min-height:2.9em}
+.gj-v{display:flex;flex-direction:column;gap:8px}
+.gj-mid{display:flex;justify-content:space-between;align-items:center;border-top:2px dotted #5E564C;margin:16px 0 8px;padding:0 6%}
+.gj-mid span{font-size:22px;line-height:1;margin-top:-12px;background:#F6F2EA;padding:0 4px}
+.gj-5w{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.gj-5w>div{display:flex;flex-direction:column;gap:6px}
+/* Before */
+.bf{display:grid;grid-template-columns:150px 18px minmax(0,1fr) minmax(0,1.2fr) minmax(0,.9fr);gap:0 0;align-items:start;margin-top:12px}
+.bf-l{display:flex;flex-direction:column;gap:8px;align-items:stretch}
+.bf-bub{background:#1F1B16;color:#F6F2EA;font-size:11px;font-weight:700;line-height:1.35;text-align:center;padding:10px 8px;border-radius:50%/40%}
+.bf-l .cap{text-align:center;font-weight:900;font-size:15px}
+.bf-br{align-self:stretch;border-left:2px solid #5E564C;margin:30px 0 30px 8px;position:relative}
+.bf-mid{padding:0 12px}.bf-mid textarea{min-height:200px!important}
+.bf-intro .fld>span{font-size:13px;color:#5E564C;text-align:center}
+.bf-intro textarea{border-radius:18px!important;background:#ECE5D8!important;min-height:200px}
+.bf-intro textarea.filled{background:#fff!important}
+.bf-r{display:flex;flex-direction:column;gap:8px;padding-left:12px}
+/* ブランド戦略MAP */
+.bm-flow{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:#5E564C;margin:6px 0}
+.bm-flow::before,.bm-flow::after{content:"";flex:1;border-top:2px solid #5E564C}
+.bm{display:grid;grid-template-columns:minmax(0,1fr) 40px minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:8px;align-items:stretch}
+.bm .ws-chip{border-radius:4px}
+.bm-side{background:#1F1B16;color:#F6F2EA;writing-mode:vertical-rl;text-orientation:upright;font-weight:900;font-size:14px;letter-spacing:.2em;display:flex;align-items:center;justify-content:center;border-radius:6px;padding:10px 0}
+.bm .fld textarea{min-height:96px}
+.bm-n{font-size:20px;font-weight:900;color:#B0A797;line-height:1}
+@media(max-width:760px){.gj-cols{grid-template-columns:repeat(2,minmax(0,1fr))}.gj-col:not(:last-child) .fld textarea{min-height:130px!important}.gj-col:last-child{grid-column:1/-1}.gj-h .t{font-size:14px}.gj-5w{grid-template-columns:repeat(2,minmax(0,1fr))}.gj-mid{display:none}.bf{grid-template-columns:1fr}.bf-br{display:none}.bf-mid,.bf-r{padding:0;margin-top:8px}.bm{grid-template-columns:1fr}.bm-side{writing-mode:horizontal-tb;letter-spacing:.1em}.bm>.sp{display:none}}
 /* After framework layout */
 .fw{display:flex;flex-direction:column;gap:0}
 .fw-h{background:#1F1B16;color:#F6F2EA;font-size:13px;font-weight:700;padding:6px 10px;text-align:center}
@@ -209,7 +252,7 @@ const SHEETS = {
     G('① 感じた事のシェア', 2, [F('after_listen', '話を聞いてみて:感じた事/共感した所', '', 3), F('after_talk', '話をしてみて:感じた事/共感した所', '', 3)]),
     G('② 他己紹介(聞いた相手を紹介する)', 4, [F('after_o_do', 'その人がやっている事', '', 3), F('after_o_why', 'なぜやっているか', '', 3), F('after_o_person', '人となり', '', 3), F('after_o_waku', 'どこがワクワクしていたか', '', 3)])
   ],
-  intro: [G('Before(ライスワークとライフワークの区別がつかない)', 3, [F('ch4_name', '名前'), F('ch4_means', '自分の名前から、今持っている手段(1行に1つ)', '', 3), F('ch4_intro', '①自己紹介:初めて会う人に、自分をどう伝えるか', '', 3)], true)],
+  intro: [G('Before(ライスワークとライフワークの区別がつかない)', 3, [F('ch4_name', '名前'), F('ch4_means', '自分の名前から、今持っている手段(1行に1つ)', '', 3), F('ch4_intro', '①自己紹介:初めて会う人に、自分をどう伝えるか', '', 3), F('ch4_bf_c', 'to C', '', 2), F('ch4_bf_b', 'to B', '', 2), F('ch4_bf_soc', 'to 社会', '', 2)], true)],
   ch2: [
     G('サービス', 4, [F('ch2_s_why', 'WHY ④ なぜサービスをはじめたのか'), F('ch2_s_how', 'HOW ① どんな手段を持っているか?'), F('ch2_s_what', 'WHAT ③ どんなメッセージ'), F('ch2_s_who', 'WHO ② to C ダレが問題・どんな課題を抱えているか')], true),
     G('ブランド', 4, [F('ch2_b_why', 'WHY ⑨ 独自の価値は何か?'), F('ch2_b_how', 'HOW ⑫ どんな独自の価値があるか'), F('ch2_b_what', 'WHAT ⑪ どんなメッセージ'), F('ch2_b_who', 'WHO ⑩ to B どの企業・市場のどんな課題か')], true),
@@ -240,8 +283,9 @@ const HOWTO = {"drivein": ["ドライブイン(自己紹介):ニックネーム�
 const KEY = 'cbo-taiken-lab-v1';
 const $ = (s) => document.querySelector(s);
 const esc = (t) => String(t ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-let S = { vals: {}, tab: {}, saved: {}, submittedAt: null };
+let S = { vals: {}, tab: {}, saved: {}, layout: {}, submittedAt: null };
 try { const r = localStorage.getItem(KEY); if (r) S = Object.assign(S, JSON.parse(r)); } catch (e) {}
+if (!S.layout) S.layout = {};
 let saveT;
 const persist = () => { clearTimeout(saveT); saveT = setTimeout(() => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }, 400); };
 const V = (k) => (S.vals[k] || '').trim();
@@ -267,6 +311,45 @@ function railHTML(x) {
   <span style="display:flex;flex-direction:column;margin-top:20px"><span class="muted" style="font-size:14px">入力率</span><span class="rate">${x.rate}%</span><span class="muted" style="font-size:12px">${x.filled} / ${x.all} 項目</span></span></div>`;
 }
 function fldHTML(f) { const v = S.vals[f.key] || ''; return `<label class="fld"><span>${esc(f.label)}</span><textarea data-k="${f.key}" placeholder="${esc(f.ph)}" style="min-height:${f.rows * 20 + 18}px" class="${v.trim() ? 'filled' : ''}">${esc(v)}</textarea></label>`; }
+function FK(id) { const o = {}; SHEETS[id].forEach((g) => g.fields.forEach((f) => { o[f.key] = f; })); return o; }
+function journeyWS() {
+  const a = FK('ch3'), L = (k, label) => fldHTML({ ...a[k], label: label == null ? a[k].label : label });
+  const ages = [['ch3_a1', '幼少期'], ['ch3_a2', '保育園<br>幼稚園'], ['ch3_a3', '小学生'], ['ch3_a4', '中学生'], ['ch3_a5', '高校生'], ['ch3_a6', '社会人']];
+  const w = [['ch3_when', 'WHEN 何才の時', '主人公は<br>ダレか?'], ['ch3_why', 'WHY どういう体験/課題', '課題/障害が<br>ある'], ['ch3_what', 'WHAT 過去の自分/関係者へのアドバイス', 'リアルな<br>セリフがある'], ['ch3_who', 'WHO 当時の自分と同じ状況の人', '感情が<br>ある'], ['ch3_where', 'WHERE どこにいる', '臨場感が<br>ある'], ['ch3_how', 'HOW 何を使って伝える', '未来の自分へ<br>一番伝えたいメッセージ']];
+  return `<div class="ws gj"><div class="gj-h"><span class="ws-chip">WHY(過去)</span><span class="t">◀ 原体験ジャーニー</span><span class="ws-chip">VALUE(現在)</span></div>
+  <div class="gj-cols">${ages.map(([k, l], i) => `<div class="gj-col${i === 0 ? ' orig' : ''}"><b>${l}${i === 0 ? '<span style="color:#BE3A21">原体験</span>' : ''}</b>${L(k, '')}</div>`).join('')}
+  <div class="gj-col"><b>現状</b><div class="gj-v ws-round">${L('ch3_now', '今やっている事')}${L('ch3_waku', 'ワクワクする事・熱中する事')}${L('ch3_fut', '将来やりたい事')}</div></div></div>
+  <div class="gj-mid" aria-hidden="true"><span>▼</span><span>▲</span></div>
+  <div class="gj-5w">${w.map(([k, l, c]) => `<div class="ws-round">${L(k, l)}<div class="ws-chip">${c}</div></div>`).join('')}</div></div>`;
+}
+function beforeWS() {
+  const a = FK('intro'), L = (k, label) => fldHTML({ ...a[k], label: label == null ? a[k].label : label });
+  return `<div class="ws"><div class="ws-bar">Before(ライスワークとライフワークの区別がつかない)</div>
+  <div class="bf"><div class="bf-l"><div class="bf-bub">自分の頭の中で、<br>すべてが<br>つながっている。</div>${L('ch4_name', '名前')}<div class="cap">個人</div></div>
+  <div class="bf-br" aria-hidden="true"></div>
+  <div class="bf-mid">${L('ch4_means', '手段(自分の名前から、今持っている手段を1行に1つ)')}</div>
+  <div class="bf-intro">${L('ch4_intro', '①自己紹介 — 初めて会う人に自分をどういうふうに伝えるか')}</div>
+  <div class="bf-r ws-tag ws-round">${L('ch4_bf_c')}${L('ch4_bf_b')}${L('ch4_bf_soc')}</div></div></div>`;
+}
+function mapWS() {
+  const a = FK('ch2'), C = (k) => { const f = a[k]; const m = f.label.match(/^(WHY|HOW|WHAT|WHO)\s*(\S+)\s*(.*)$/); return fldHTML({ ...f, label: m ? m[3] : f.label }).replace('<span>', `<span><span class="bm-n">${m ? m[2] : ''}</span> `); };
+  const row = (p, name) => `${C(p + '_why')}<div class="bm-side">${name}</div>${C(p + '_how')}${C(p + '_what')}${C(p + '_who')}`;
+  return `<div class="ws"><div class="bm-flow">課題解決の流れ →</div>
+  <div class="bm"><div class="ws-chip">WHY</div><div class="sp"></div><div class="ws-chip">HOW</div><div class="ws-chip">WHAT</div><div class="ws-chip">WHO</div>
+  ${row('ch2_s', 'サービス')}${row('ch2_b', 'ブランド')}${row('ch2_c', 'CEO')}
+  <div class="ws-chip">原体験</div><div class="sp"></div><div class="ws-chip">手段</div><div class="ws-chip">メッセージ</div><div class="ws-chip">ターゲット</div></div>
+  <div class="bm-flow">← ブランディングの流れ</div></div>`;
+}
+function homeworkWS() {
+  const a = FK('homework'), L = (k, label) => fldHTML({ ...a[k], label: label == null ? a[k].label : label });
+  const nm = (S.vals.ch4_name || '').trim().split('\n')[0];
+  return `<div class="ws fw"><div class="fw-h">宿題 — 個人が法人化するワークシートを仕上げる(DAY2で共有)</div>
+  <div class="fw-cols" style="grid-template-columns:96px 18px minmax(0,1fr)">
+    <div class="fw-node">${nm ? esc(nm) : '名前'}</div><div class="fw-ar" aria-hidden="true"></div><div class="fw-in">${L('hw_thought', 'アーティスト:思想・感性(自分の究極の思想)')}</div>
+    <div class="fw-node blk">法人化</div><div class="fw-ar" aria-hidden="true"></div><div class="fw-in">${L('hw_corp_final', '法人:仮の法人名(決定版)')}</div>
+  </div>
+  <div class="fgrid" style="grid-template-columns:repeat(2,minmax(0,1fr));margin-top:16px">${L('hw_share')}${L('hw_1on1')}</div></div>`;
+}
 function afterFW() {
   const all = {}; SHEETS.ch4.forEach((g) => g.fields.forEach((f) => { all[f.key] = f; }));
   const L = (k, label) => fldHTML({ ...all[k], label: label || all[k].label });
@@ -282,7 +365,15 @@ function afterFW() {
   </div></div>`;
 }
 function fieldsHTML(id) {
-  if (id === 'ch4') return afterFW();
+  const WS = { ch4: afterFW, ch3: journeyWS, intro: beforeWS, ch2: mapWS, homework: homeworkWS };
+  if (WS[id]) {
+    const lay = S.layout[id] || 'ws';
+    const tg = `<div class="lay" role="group" aria-label="記入シートの表示"><button class="lay-b" data-lay="${id}:ws" aria-pressed="${lay === 'ws'}">現状バージョン(ワークシート型)</button><button class="lay-b" data-lay="${id}:list" aria-pressed="${lay === 'list'}">過去バージョン(一覧型)</button></div>`;
+    return tg + (lay === 'ws' ? WS[id]() : listHTML(id));
+  }
+  return listHTML(id);
+}
+function listHTML(id) {
   return SHEETS[id].map((g) => `<fieldset><legend class="${g.dark ? 'dk' : ''}">${esc(g.title)}</legend><div class="fgrid" style="grid-template-columns:repeat(${g.cols},minmax(0,1fr))">${g.fields.map((f) => { const v = S.vals[f.key] || ''; return `<label class="fld"><span>${esc(f.label)}</span><textarea data-k="${f.key}" placeholder="${esc(f.ph)}" style="min-height:${f.rows * 20 + 18}px" class="${v.trim() ? 'filled' : ''}">${esc(v)}</textarea></label>`; }).join('')}</div></fieldset>`).join('');
 }
 function centerHTML(x) {
@@ -363,6 +454,7 @@ function rerenderCenter(id) {
 
 document.addEventListener('click', async (e) => {
   const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.lay) { const [id, l] = b.dataset.lay.split(':'); S.layout[id] = l; persist(); rerenderCenter(id); return; }
   if (b.dataset.tab) { const [id, t] = b.dataset.tab.split(':'); S.tab[id] = t; persist(); rerenderCenter(id); return; }
   if (b.dataset.save) { const d = new Date(); S.saved[b.dataset.save] = `保存しました ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`; persist(); rerenderCenter(b.dataset.save); return; }
   if (b.id === 'doSubmit') { const d = new Date(); S.submittedAt = `${d.getFullYear()}.${d.getMonth() + 1}.${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`; persist(); $('#sheetWrap').innerHTML = sheetHTML(stats()); $('#summary-sheet').scrollIntoView({ block: 'start' }); return; }
