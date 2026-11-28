@@ -165,6 +165,7 @@ a.dark.btnlink{background:#1F1B16;color:#F6F2EA}a.light.btnlink{border:1px solid
 #certDoc .rl{top:640px;font-size:13.3px;letter-spacing:.32em;width:260px}
 #certDoc .L{left:154px;right:auto}#certDoc .R{left:720px;right:auto}
 @media(max-width:760px){.cert-form{grid-template-columns:1fr}.cert-sec{padding:18px}}
+.gnote{margin:0 0 10px;padding:8px 12px;background:#FBEDE8;border-left:4px solid #BE3A21;font-size:13px;font-weight:700;color:#1F1B16}
 /* worksheet layouts */
 .ws-bar{background:#1F1B16;color:#F6F2EA;font-size:13px;font-weight:700;padding:6px 10px;text-align:center}
 .ws .fld span{min-height:0}.ws .fld{height:auto}.ws .fld textarea{margin-top:0}
@@ -329,9 +330,9 @@ footer{border-top:1px solid #D6CCBB;margin-top:48px}
 <script>
 {
 const F = (key, label, ph, rows) => ({ key, label, ph: ph || '', rows: rows || 3 });
-const G = (title, cols, fields, dark) => ({ title, cols, fields, dark });
+const G = (title, cols, fields, dark, note) => ({ title, cols, fields, dark, note });
 const SHEETS = {
-  drivein: [G('ドライブイン(自己紹介)', 3, [F('in_name', 'お名前(ニックネーム)', '例:チカさん', 2), F('in_purpose', '本日参加した目的', '', 2), F('in_why', '最近なぜ/違和感に思ったこと', '', 2)])],
+  drivein: [G('ドライブイン(自己紹介)', 3, [F('in_name', 'お名前(ニックネーム)', '例:チカさん', 2), F('in_purpose', '本日参加した目的', '', 2), F('in_why', '最近なぜ/違和感に思ったこと', '', 2)]), G('卒業証書のお名前(ローマ字)', 2, [F('in_first', 'ファーストネーム', '例: Ikuo', 1), F('in_last', 'セカンドネーム', '例: Kikuchi', 1)], false, '卒業証書の名前で使うので、記入をお願いします。半角英字で、頭文字は自動で大文字になります。')],
   start: [G('3つのルールを読んで', 1, [F('start_rule', 'いちばん大事にしたいルールと、その理由', '', 2)])],
   ch1: [G('定義シート(3分・直感で)', 2, [F('ch1_brand', 'ブランドとは、', '', 3), F('ch1_branding', 'ブランディングとは、', '', 3)])],
   ch3: [
@@ -478,7 +479,7 @@ function fieldsHTML(id) {
   return listHTML(id);
 }
 function listHTML(id) {
-  return SHEETS[id].map((g) => `<fieldset><legend class="${g.dark ? 'dk' : ''}">${esc(g.title)}</legend><div class="fgrid" style="grid-template-columns:repeat(${g.cols},minmax(0,1fr))">${g.fields.map((f) => { const v = S.vals[f.key] || ''; return `<label class="fld"><span>${esc(f.label)}</span><textarea data-k="${f.key}" placeholder="${esc(f.ph)}" style="min-height:${f.rows * 20 + 18}px" class="${v.trim() ? 'filled' : ''}">${esc(v)}</textarea></label>`; }).join('')}</div></fieldset>`).join('');
+  return SHEETS[id].map((g) => `<fieldset><legend class="${g.dark ? 'dk' : ''}">${esc(g.title)}</legend>${g.note ? `<p class="gnote">${esc(g.note)}</p>` : ''}<div class="fgrid" style="grid-template-columns:repeat(${g.cols},minmax(0,1fr))">${g.fields.map((f) => { const v = S.vals[f.key] || ''; return `<label class="fld"><span>${esc(f.label)}</span><textarea data-k="${f.key}" placeholder="${esc(f.ph)}" style="min-height:${f.rows * 20 + 18}px" class="${v.trim() ? 'filled' : ''}">${esc(v)}</textarea></label>`; }).join('')}</div></fieldset>`).join('');
 }
 function centerHTML(x) {
   const s = x.s, t = S.tab[s.id] || 'img';
@@ -660,6 +661,8 @@ function certHTML() {
   const nmSrc = (V('ch4_name').split('\n')[0] || V('in_name') || '').trim();
   if (!(c.name || '').trim() && nmSrc) c.name = nmSrc;
   const lat = nmSrc.match(/^([A-Za-z][A-Za-z'\-]*)\s+([A-Za-z][A-Za-z'\-]*)$/);
+  if (!(c.first || '').trim() && V('in_first')) c.first = normRomaji(V('in_first'));
+  if (!(c.last || '').trim() && V('in_last')) c.last = normRomaji(V('in_last'));
   if (lat && !(c.first || '').trim() && !(c.last || '').trim()) { c.first = lat[1]; c.last = lat[2]; }
   if (COHORTS[c.cohort] && !COHORTS[c.cohort].courses[c.course]) c.course = Object.keys(COHORTS[c.cohort].courses)[0];
   if (c.romaji && !c.first && !c.last) { const p = c.romaji.trim().split(/\s+/); c.first = p[0] || ''; c.last = p.slice(1).join(' '); delete c.romaji; }
