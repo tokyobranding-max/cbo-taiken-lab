@@ -124,6 +124,11 @@ legend.dk{background:#1F1B16;color:#F6F2EA;padding:6px 10px;border:0}
 .fw-nodew{display:flex;align-items:center}.fw-nodew>.fw-node{flex:1;align-self:center}
 .fw-al .fw-ar{margin-top:0;align-self:center}
 /* 卒業証書 */
+@font-face{font-family:'CertRound';src:url(fonts/m-plus-rounded-1c-latin-400-normal.woff2) format('woff2');font-weight:400}
+@font-face{font-family:'CertRound';src:url(fonts/m-plus-rounded-1c-latin-700-normal.woff2) format('woff2');font-weight:700}
+@font-face{font-family:'CertScript';src:url(fonts/mrs-saint-delafield-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:'CertSign';src:url(fonts/herr-von-muellerhoff-latin-400-normal.woff2) format('woff2')}
+
 .cert-sec{margin-top:40px;border:2px solid #1F1B16;background:#fff;padding:28px}
 .cert-sec h2{font-size:24px;font-weight:900;margin:0 0 6px}
 .cert-form{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:18px 0}
@@ -133,25 +138,16 @@ legend.dk{background:#1F1B16;color:#F6F2EA;padding:6px 10px;border:0}
 .cert-err{color:#BE3A21;font-size:13px;min-height:1.4em}
 .cert-wrap{overflow:auto;border:1px solid #D6CCBB;background:#ECE5D8;padding:16px;margin-top:12px}
 .cert-scale{width:1123px;transform-origin:top left;margin:0 auto}
-#certDoc{width:1123px;height:794px;background:#FBF8F2;position:relative;color:#1F1B16;font-family:'Noto Serif JP',serif;box-sizing:border-box;padding:34px}
-#certDoc .f1{position:absolute;inset:22px;border:3px solid #1F1B16}
-#certDoc .f2{position:absolute;inset:32px;border:1px solid #BE3A21}
-#certDoc .in{position:relative;height:100%;display:flex;flex-direction:column;align-items:center;text-align:center;padding:36px 70px 30px}
-#certDoc .sch{font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:700;letter-spacing:.3em;color:#BE3A21}
-#certDoc h3{font-size:58px;font-weight:700;letter-spacing:.4em;margin:10px 0 0 .4em;line-height:1.2}
-#certDoc .en{font-family:'Noto Sans JP',sans-serif;font-size:13px;letter-spacing:.42em;font-weight:700;color:#5E564C;margin-top:4px}
-#certDoc .nm{margin-top:26px;font-size:38px;font-weight:700;border-bottom:1.5px solid #1F1B16;padding:0 40px 4px;min-width:420px}
-#certDoc .nm small{font-size:20px;margin-left:12px}
-#certDoc .ro{font-family:'Noto Sans JP',sans-serif;font-size:16px;letter-spacing:.2em;font-weight:700;margin-top:8px}
-#certDoc .tx{font-size:17px;line-height:2;margin-top:18px;max-width:820px}
-#certDoc .txe{font-family:'Noto Sans JP',sans-serif;font-size:12.5px;line-height:1.7;color:#5E564C;margin-top:8px;max-width:820px}
-#certDoc .bt{margin-top:auto;width:100%;display:flex;justify-content:space-between;align-items:flex-end;font-family:'Noto Sans JP',sans-serif;text-align:left}
-#certDoc .bt .d{font-size:13px;line-height:1.7}
-#certDoc .bt .d b{font-family:'Noto Serif JP',serif;font-size:17px}
-#certDoc .bt .sg{text-align:right;font-size:12px;line-height:1.6}
-#certDoc .bt .sg b{font-family:'Noto Serif JP',serif;font-size:20px;display:block}
-#certDoc .seal{width:96px;height:96px;white-space:nowrap;letter-spacing:-.02em;border:3px solid #BE3A21;color:#BE3A21;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif JP',serif;font-size:11px;font-weight:700;line-height:1.35;text-align:center;transform:rotate(-8deg);margin-left:16px}
-#certDoc .no{position:absolute;top:6px;right:8px;font-family:'Noto Sans JP',sans-serif;font-size:10px;color:#5E564C;letter-spacing:.1em}
+#certDoc{width:1123px;height:794px;position:relative;background:#F2F1EE url(img/cert-bg.jpg) center/100% 100% no-repeat;color:#627E8B;font-family:'CertRound',sans-serif;overflow:hidden}
+#certDoc>*{position:absolute;left:0;right:0;text-align:center;margin:0;white-space:nowrap}
+#certDoc .t1{top:146px;font-size:51px;font-weight:700;letter-spacing:.01em}
+#certDoc .t2{top:218px;font-size:18.5px;font-weight:700;letter-spacing:.12em}
+#certDoc .nm{top:318px;font-family:'CertScript',cursive;font-size:104px;line-height:1;color:#111}
+#certDoc .ap{top:430px;font-size:18.5px;font-weight:400}
+#certDoc .sg{font-family:'CertSign',cursive;font-size:50px;color:#111;top:548px;width:260px;line-height:1}
+#certDoc .sn{top:607px;font-size:18.5px;font-weight:700;width:260px}
+#certDoc .rl{top:640px;font-size:13.3px;letter-spacing:.32em;width:260px}
+#certDoc .L{left:154px;right:auto}#certDoc .R{left:720px;right:auto}
 @media(max-width:760px){.cert-form{grid-template-columns:1fr}.cert-sec{padding:18px}}
 /* worksheet layouts */
 .ws-bar{background:#1F1B16;color:#F6F2EA;font-size:13px;font-weight:700;padding:6px 10px;text-align:center}
@@ -553,7 +549,7 @@ function certCheck(c) {
   const e = [];
   if (!(c.name || '').trim()) e.push('お名前を入力してください');
   if (!(c.romaji || '').trim()) e.push('ローマ字を入力してください');
-  else if (!/^[A-Za-zÀ-ÿĀ-ž][A-Za-zÀ-ÿĀ-ž' .\-]*[A-Za-zÀ-ÿĀ-ž.]$/.test(c.romaji.trim())) e.push('ローマ字は半角英字で入力してください(例: Hideo Chikaike)');
+  else if (!/^[A-Za-zÀ-ÿĀ-ž][A-Za-zÀ-ÿĀ-ž' .\-]*[A-Za-zÀ-ÿĀ-ž.]$/.test(c.romaji.trim())) e.push('ローマ字は半角英字で入力してください(例: Kikuchi Ikuo)');
   const co = COHORTS[c.cohort]; if (!co) e.push('参加期を選んでください');
   else if (!co.courses[c.course]) e.push('コースを選んでください');
   else { const [y, m] = co.courses[c.course].done; if (fyOf(y, m) !== co.fy) e.push('期の年度設定に誤りがあります(管理者に連絡してください)'); }
@@ -561,17 +557,13 @@ function certCheck(c) {
 }
 function certNo(c) { let h = 0; for (const ch of `${c.name}|${normRomaji(c.romaji)}|${c.cohort}|${c.course}`) h = (h * 31 + ch.codePointAt(0)) >>> 0; return `CBO-${COHORTS[c.cohort].fy}-${String(c.cohort).padStart(2, '0')}${c.course}-${String(h % 10000).padStart(4, '0')}`; }
 function certDocHTML(c) {
-  const co = COHORTS[c.cohort], cs = co.courses[c.course], [y, m, d] = cs.done, ro = normRomaji(c.romaji);
-  return `<div id="certDoc"><div class="f1"></div><div class="f2"></div><div class="in">
-  <div class="no">No. ${esc(certNo(c))}</div>
-  <div class="sch">東京ブランディング大学校　CBO育成講座</div>
-  <h3>卒業証書</h3><div class="en">CERTIFICATE OF COMPLETION</div>
-  <div class="nm">${esc(c.name.trim())}<small>殿</small></div><div class="ro">${esc(ro.toUpperCase())}</div>
-  <p class="tx">あなたは東京ブランディング大学校 CBO育成講座<br>第${c.cohort}期(${co.fy}年度)の全課程を修了されました。<br>原体験から自らの思想を言葉にし、ブランドとして社会に届ける力を<br>身につけたことを、ここに証します。</p>
-  <p class="txe">This is to certify that <b>${esc(ro)}</b> has successfully completed all requirements of<br>the CBO (Chief Branding Officer) Development Course, ${ORD(+c.cohort)} Cohort (Academic Year ${co.fy}), at Tokyo Branding School.</p>
-  <div class="bt"><div class="d">修了日<br><b>${y}年${m}月${d}日</b>(${REIWA(y)}${m}月${d}日)<br>Date of Completion: ${MON[m - 1]} ${d}, ${y}<br>第${c.cohort}期 ${esc(cs.label.split('(')[0])} ／ ${co.fy}年度(${co.wareki})</div>
-  <div style="display:flex;align-items:flex-end"><div class="sg">東京ブランディング大学校 / Tokyo Branding School<b>講師　チカイケ秀夫</b>Hideo Chikaike, Instructor</div><div class="seal">東京<br>ブランディング<br>大学校</div></div></div>
-  </div></div>`;
+  const co = COHORTS[c.cohort], cs = co.courses[c.course], [y] = cs.done, ro = normRomaji(c.romaji), P = 'Hideo Chikaike';
+  return `<div id="certDoc" role="img" aria-label="${esc(ro)}さんの修了証書">
+  <p class="t1">CBO Training Course</p><p class="t2">THIS CERTIFICATE IS PROUDLY AWARDED TO</p>
+  <p class="nm">${esc(ro)}</p>
+  <p class="ap">to appreciate the graduation of ${y}&nbsp;&nbsp;${ORD(+c.cohort)} term Tokyo Branding University</p>
+  <p class="sg L">${P}</p><p class="sn L">${P}</p><p class="rl L">UNIVERSITY PRESIDENT</p>
+  <p class="sg R">${P}</p><p class="sn R">${P}</p><p class="rl R">FACULTY PRESIDENT</p></div>`;
 }
 function certHTML() {
   const c = S.cert || (S.cert = { name: V('ch4_name') ? V('ch4_name').split('\n')[0] : (V('in_name') || ''), romaji: '', cohort: '18', course: '' });
@@ -579,8 +571,8 @@ function certHTML() {
   return `<section class="cert-sec" id="cert-sec" aria-labelledby="certTitle"><span class="lbl">提出のあと</span><h2 id="certTitle">卒業証書を発行する</h2>
   <p class="muted" style="font-size:14px;margin:0">お名前・ローマ字・参加期を入れて「発行する」を押すと、卒業証書をPDFと画像で保存できます。証書の年度と修了日は、選んだ期とコースから自動で入ります。</p>
   <div class="cert-form">
-    <label>お名前(漢字)<input id="cert_name" autocomplete="name" value="${esc(c.name)}" placeholder="例: 近池 秀夫"><small>証書に大きく入ります</small></label>
-    <label>ローマ字<input id="cert_romaji" autocomplete="off" inputmode="latin" lang="en" value="${esc(c.romaji)}" placeholder="例: Hideo Chikaike"><small>名・姓の順。英文の証明文に入ります</small></label>
+    <label>お名前(漢字)<input id="cert_name" autocomplete="name" value="${esc(c.name)}" placeholder="例: 近池 秀夫"><small>ファイル名と記録に使います</small></label>
+    <label>ローマ字<input id="cert_romaji" autocomplete="off" inputmode="latin" lang="en" value="${esc(c.romaji)}" placeholder="例: Kikuchi Ikuo"><small>証書に書く順で入力(例: Kikuchi Ikuo)</small></label>
     <label>参加期<select id="cert_cohort">${Object.keys(COHORTS).map((k) => `<option value="${k}" ${String(c.cohort) === k ? 'selected' : ''}>第${k}期(${COHORTS[k].fy}年度)</option>`).join('')}</select><small>現在発行できるのは第18期です</small></label>
     <label>コース<select id="cert_course"><option value="">選んでください</option>${COHORTS[c.cohort] ? Object.entries(COHORTS[c.cohort].courses).map(([k, v]) => `<option value="${k}" ${c.course === k ? 'selected' : ''}>${esc(v.label)}</option>`).join('') : ''}</select><small>修了日(DAY2の日付)が変わります</small></label>
   </div>
@@ -594,7 +586,7 @@ function certRefresh() { const sec = $('#cert-sec'); if (!sec) return; const st 
 document.addEventListener('input', (e) => { const id = e.target.id; if (!/^cert_/.test(id)) return; S.cert = S.cert || {}; const k = id.slice(5); S.cert[k] = e.target.value; if (k === 'cohort') S.cert.course = ''; persist(); if (k === 'cohort' || k === 'course') certRefresh(); else { const ok = !certCheck(S.cert).length; const sc = $('#certScale'); if (sc && ok) { sc.innerHTML = certDocHTML(S.cert); certFit(); } if (S.cert.tried) $('#certErr').textContent = certCheck(S.cert).join(' ／ '); } });
 document.addEventListener('change', (e) => { if (/^cert_(cohort|course)$/.test(e.target.id)) { S.cert[e.target.id.slice(5)] = e.target.value; if (e.target.id === 'cert_cohort') S.cert.course = ''; persist(); certRefresh(); } });
 window.addEventListener('resize', certFit);
-async function certCanvas() { await (document.fonts ? document.fonts.ready : Promise.resolve()); const el = $('#certDoc'); const sc = $('#certScale'); const t = sc.style.transform; sc.style.transform = 'none'; try { return await window.html2canvas(el, { scale: 2, backgroundColor: '#FBF8F2' }); } finally { sc.style.transform = t; } }
+async function certCanvas() { if (document.fonts) { await Promise.all(["700 51px CertRound", "400 18px CertRound", "104px CertScript", "50px CertSign"].map((f) => document.fonts.load(f).catch(() => {}))); await document.fonts.ready; } const el = $('#certDoc'); const sc = $('#certScale'); const t = sc.style.transform; sc.style.transform = 'none'; try { return await window.html2canvas(el, { scale: 2, backgroundColor: '#F2F1EE', useCORS: true }); } finally { sc.style.transform = t; } }
 document.addEventListener('click', async (e) => {
   const b = e.target.closest('button'); if (!b || !/^cert(Issue|Png)$/.test(b.id)) return;
   S.cert.tried = true; persist(); const er = certCheck(S.cert);
@@ -603,7 +595,7 @@ document.addEventListener('click', async (e) => {
   const msg = $('#certMsg'); if (!window.html2canvas || !window.jspdf) { msg.textContent = '保存できませんでした'; return; }
   msg.textContent = '作成中…';
   try {
-    const cv = await certCanvas(), fn = `卒業証書_CBO育成講座第${S.cert.cohort}期_${S.cert.name.trim()}`;
+    const cv = await certCanvas(), fn = `修了証書_CBO育成講座第${S.cert.cohort}期_${S.cert.name.trim()}`;
     if (b.id === 'certPng') { const a = document.createElement('a'); a.href = cv.toDataURL('image/png'); a.download = fn + '.png'; a.click(); }
     else { const pdf = new window.jspdf.jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' }); pdf.addImage(cv.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, 297, 210); pdf.save(fn + '.pdf'); }
     S.cert.issuedAt = new Date().toISOString(); persist(); msg.textContent = '発行しました(No. ' + certNo(S.cert) + ')';
