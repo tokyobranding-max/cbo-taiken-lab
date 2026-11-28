@@ -536,7 +536,7 @@ function renderAll() {
   $('#stages').innerHTML = st.list.map((x) => `<article id="${x.s.id}" data-stage="${x.s.id}" class="stage"><div class="rail" data-rail="${x.s.id}">${railHTML(x)}</div><div class="center" data-center="${x.s.id}">${centerHTML(x)}</div><aside class="info ${x.st}" data-info="${x.s.id}">${infoHTML(x)}</aside></article>`).join('');
   $('#submit').innerHTML = submitHTML(st);
   renderSurvey();
-  $('#sheetWrap').innerHTML = S.submittedAt ? sheetHTML(st) + mailBoxHTML() + certHTML() : ''; certFit();
+  $('#sheetWrap').innerHTML = S.submittedAt ? sheetHTML(st) + mailBoxHTML() + (S.sentAt ? certHTML() : '') : ''; certFit();
   measure();
 }
 function refresh() {
@@ -602,6 +602,8 @@ async function autoSend() {
     const fd = new URLSearchParams({ 'entry.1700236277': nm, 'entry.942644710': S.submittedAt || '', 'entry.2008958827': stats().rate + '%', 'entry.466771584': mailSubject() + '\n\n' + mailBodyFull(), 'entry.1011724969': satText(), 'entry.225375565': (S.vals.sv_change || '').trim(), 'entry.167788622': (S.vals.sv_improve || '').trim(), 'entry.1389583091': S.vals.sv_case || '', 'entry.648924836': (S.vals.sv_learn || '').trim() });
     await fetch(GFORM, { method: 'POST', mode: 'no-cors', body: fd });
     S.sentAt = S.submittedAt; persist(); set('講師に送信しました(' + S.submittedAt + ')。書き足したら、もう一度送信してください。', true);
+    if (!$('#cert-sec')) { $('#mail-sec').insertAdjacentHTML('afterend', certHTML()); certFit(); }
+    setTimeout(() => { const cs = $('#cert-sec'); if (cs) cs.scrollIntoView({ block: 'start', behavior: 'smooth' }); }, 900);
   } catch (err) {
     const m = String(err && err.message || err);
     set('自動で送れませんでした(' + m + ')。下のボタンからメールで送ってください。', false);
@@ -657,7 +659,7 @@ function certHTML() {
   if (COHORTS[c.cohort] && !COHORTS[c.cohort].courses[c.course]) c.course = Object.keys(COHORTS[c.cohort].courses)[0];
   if (c.romaji && !c.first && !c.last) { const p = c.romaji.trim().split(/\s+/); c.first = p[0] || ''; c.last = p.slice(1).join(' '); delete c.romaji; }
   const err = c.tried ? certCheck(c) : [];
-  return `<section class="cert-sec" id="cert-sec" aria-labelledby="certTitle"><span class="lbl">提出のあと</span><h2 id="certTitle">卒業証書を発行する</h2>
+  return `<section class="cert-sec" id="cert-sec" aria-labelledby="certTitle"><span class="lbl">送信が済みました</span><h2 id="certTitle">卒業証書を発行する</h2>
   <p class="muted" style="font-size:14px;margin:0">お名前・ローマ字(ファーストネーム／セカンドネーム)・参加期を入れて「発行する」を押すと、卒業証書をPDFと画像で保存できます。証書の年度と修了日は、選んだ期とコースから自動で入ります。</p>
   <div class="cert-form">
     <label>お名前(漢字)<input id="cert_name" autocomplete="name" value="${esc(c.name)}" placeholder="例: 近池 秀夫"><small>ファイル名と記録に使います</small></label>
@@ -696,7 +698,7 @@ document.addEventListener('click', async (e) => {
   if (b.dataset.lay) { const [id, l] = b.dataset.lay.split(':'); S.layout[id] = l; persist(); rerenderCenter(id); return; }
   if (b.dataset.tab) { const [id, t] = b.dataset.tab.split(':'); S.tab[id] = t; persist(); rerenderCenter(id); return; }
   if (b.dataset.save) { const d = new Date(); S.saved[b.dataset.save] = `保存しました ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`; persist(); rerenderCenter(b.dataset.save); return; }
-  if (b.id === 'doSubmit') { const d = new Date(); S.submittedAt = `${d.getFullYear()}.${d.getMonth() + 1}.${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`; persist(); $('#sheetWrap').innerHTML = sheetHTML(stats()) + mailBoxHTML() + certHTML(); certFit(); $('#mail-sec').scrollIntoView({ block: 'center', behavior: 'smooth' }); autoSend(); return; }
+  if (b.id === 'doSubmit') { const d = new Date(); S.submittedAt = `${d.getFullYear()}.${d.getMonth() + 1}.${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`; persist(); S.sentAt = null; persist(); $('#sheetWrap').innerHTML = sheetHTML(stats()) + mailBoxHTML(); $('#mail-sec').scrollIntoView({ block: 'center', behavior: 'smooth' }); autoSend(); return; }
   if (b.id === 'closeSheet') { S.submittedAt = null; persist(); $('#sheetWrap').innerHTML = ''; return; }
   if (b.id === 'pdfBtn') {
     const msg = $('#pdfMsg'), el = $('#summary-sheet');
