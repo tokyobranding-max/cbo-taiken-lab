@@ -123,6 +123,15 @@ legend.dk{background:#1F1B16;color:#F6F2EA;padding:6px 10px;border:0}
 .fw-out.fw-sub .fld>span{align-self:end;justify-self:start}
 .fw-nodew{display:flex;align-items:center}.fw-nodew>.fw-node{flex:1;align-self:center}
 .fw-al .fw-ar{margin-top:0;align-self:center}
+.survey{border:2px solid #1F1B16;background:#fff;padding:28px;margin-top:40px}
+.survey h2{font-size:24px;font-weight:900;margin:0 0 4px}
+.sv-q{margin-top:22px}.sv-q>b{display:block;font-size:15px;font-weight:900;margin-bottom:8px}
+.sv-q textarea{width:100%;min-height:96px;border:1px solid #B0A797;padding:10px 12px;font:inherit;font-size:15px;line-height:1.7;resize:none;overflow:hidden;background:#fff}
+.sv-opts{display:flex;gap:8px;flex-wrap:wrap}
+.sv-opt{min-height:52px;min-width:88px;padding:6px 14px;border:1.5px solid #1F1B16;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer}
+.sv-opt b{font-size:20px;font-weight:900;line-height:1}.sv-opt small{font-size:11px;font-weight:700;color:#5E564C}
+.sv-opt[aria-pressed="true"]{background:#BE3A21;border-color:#BE3A21;color:#fff}.sv-opt[aria-pressed="true"] small{color:#fff}
+@media(max-width:600px){.survey{padding:20px 16px}.sv-opt{min-width:56px;flex:1}}
 .mail-auto{margin:8px 0 0;padding:12px 14px;background:#ECE5D8;font-size:15px;font-weight:700}
 .mail-auto.ok{background:#E3EEDF;color:#1F4D2B}.mail-auto.ng{background:#F7E1DB;color:#BE3A21}
 .mail-sec{margin:24px 0}
@@ -299,6 +308,7 @@ footer{border-top:1px solid #D6CCBB;margin-top:48px}
   <section id="sum" class="sum" aria-label="提出率"></section>
   <span id="progLbl" class="lbl" style="display:block;padding:16px 0 8px"></span>
   <main id="stages"></main>
+  <section id="survey" class="survey" aria-labelledby="svTitle"></section>
   <section id="submit" class="submit" aria-label="全体の入力率と提出"></section>
   <div id="sheetWrap"></div>
 <section class="about" aria-labelledby="aboutTitle">
@@ -371,6 +381,7 @@ if (!S.layout) S.layout = {};
 (() => { const v = S.vals, m = (v.ch4_means || '').split('\n').map((x) => x.trim()).filter(Boolean); if (m.length > 1 && !['ch4_means2', 'ch4_means3', 'ch4_means4', 'ch4_means5'].some((k) => (v[k] || '').trim())) { v.ch4_means = m[0]; ['ch4_means2', 'ch4_means3', 'ch4_means4'].forEach((k, i) => { v[k] = m[i + 1] || ''; }); v.ch4_means5 = m.slice(4).join('\n'); } })();
 let saveT;
 const persist = () => { clearTimeout(saveT); saveT = setTimeout(() => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }, 400); };
+window.addEventListener('pagehide', () => { clearTimeout(saveT); try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} });
 const V = (k) => (S.vals[k] || '').trim();
 
 function stats() {
@@ -524,6 +535,7 @@ function renderAll() {
   $('#progLbl').textContent = `PROGRESS · ${st.nowIdx < 0 ? STAGES.length : st.nowIdx + 1} / ${STAGES.length} · 下にスクロールすると、左の線が進みます`;
   $('#stages').innerHTML = st.list.map((x) => `<article id="${x.s.id}" data-stage="${x.s.id}" class="stage"><div class="rail" data-rail="${x.s.id}">${railHTML(x)}</div><div class="center" data-center="${x.s.id}">${centerHTML(x)}</div><aside class="info ${x.st}" data-info="${x.s.id}">${infoHTML(x)}</aside></article>`).join('');
   $('#submit').innerHTML = submitHTML(st);
+  renderSurvey();
   $('#sheetWrap').innerHTML = S.submittedAt ? sheetHTML(st) + mailBoxHTML() + certHTML() : ''; certFit();
   measure();
 }
@@ -547,6 +559,25 @@ function rerenderCenter(id) {
 
 
 
+
+/* ===== アンケート ===== */
+const SAT = [[1, '不満'], [2, 'やや不満'], [3, 'ふつう'], [4, '満足'], [5, '大変満足']];
+const SVQ = [['sv_change', 'やってみて変わった事/良かった事'], ['sv_improve', '改善点、もっとこうした方がいい点'], ['sv_learn', '今後単発、継続的に学びたい事があれば']];
+function satText() { const v = +S.vals.sv_sat; const x = SAT.find((a) => a[0] === v); return x ? `${x[0]}(${x[1]})` : ''; }
+function surveyHTML() {
+  const sat = +S.vals.sv_sat || 0, ok = S.vals.sv_case || '';
+  const ta = ([k, l]) => `<div class="sv-q"><b>${l}</b><textarea data-sv="${k}" aria-label="${l}" placeholder="自由にお書きください">${esc(S.vals[k] || '')}</textarea></div>`;
+  return `<span class="lbl">SURVEY · 提出と一緒に講師へ届きます</span><h2 id="svTitle">アンケート</h2><p class="muted" style="font-size:14px;margin:0">講座の改善に使わせてください。すべて任意です。</p>
+  <div class="sv-q"><b>講座の満足度</b><div class="sv-opts" role="group" aria-label="講座の満足度">${SAT.map(([n, l]) => `<button type="button" class="sv-opt" data-sat="${n}" aria-pressed="${sat === n}"><b>${n}</b><small>${l}</small></button>`).join('')}</div></div>
+  ${ta(SVQ[0])}${ta(SVQ[1])}
+  <div class="sv-q"><b>事例の許可</b><span class="muted" style="font-size:13px;display:block;margin:-4px 0 8px">お名前を伏せて、講座の事例として紹介してもよいですか</span><div class="sv-opts" role="group" aria-label="事例の許可">${['OK', 'NG'].map((v) => `<button type="button" class="sv-opt" data-case="${v}" aria-pressed="${ok === v}"><b>${v}</b></button>`).join('')}</div></div>
+  ${ta(SVQ[2])}`;
+}
+function renderSurvey() { const el = $('#survey'); if (!el) return; el.innerHTML = surveyHTML(); el.querySelectorAll('textarea').forEach((t) => { t.style.height = 'auto'; t.style.height = Math.max(96, t.scrollHeight + 2) + 'px'; }); }
+document.addEventListener('input', (e) => { const k = e.target.dataset && e.target.dataset.sv; if (!k) return; S.vals[k] = e.target.value; e.target.style.height = 'auto'; e.target.style.height = Math.max(96, e.target.scrollHeight + 2) + 'px'; persist(); });
+document.addEventListener('click', (e) => { const b = e.target.closest('.sv-opt'); if (!b) return; if (b.dataset.sat) S.vals.sv_sat = b.dataset.sat; if (b.dataset.case) S.vals.sv_case = b.dataset.case; persist(); renderSurvey(); const f = $(b.dataset.sat ? `[data-sat="${b.dataset.sat}"]` : `[data-case="${b.dataset.case}"]`); if (f) f.focus(); });
+function surveyText() { const L = [['満足度', satText()], [SVQ[0][1], S.vals.sv_change], [SVQ[1][1], S.vals.sv_improve], ['事例の許可', S.vals.sv_case], [SVQ[2][1], S.vals.sv_learn]].filter(([, v]) => (v || '').trim()); return L.length ? '\n■ アンケート\n' + L.map(([l, v]) => `・${l}\n${v.trim()}`).join('\n') + '\n' : ''; }
+
 /* ===== 提出メール ===== */
 const SUBMIT_TO = 'tokyobranding@gmail.com';
 const GFORM = 'https://docs.google.com/forms/d/e/1FAIpQLScZrpXpRmqT6y43lk1lsjeo6BSZCdNXEV5i8Qgf0NMETmWAMA/formResponse';
@@ -555,6 +586,7 @@ function mailBody(MAXLEN) {
   const st = stats(), nm = V('in_name') || V('ch4_name').split('\n')[0] || '';
   let b = `CBO育成講座 18期 DAY1 振り返りシートを提出します。\n\nお名前: ${nm}\n提出日時: ${S.submittedAt || ''}\n全体の入力率: ${st.rate}%\n`;
   st.list.forEach((x) => { const fs = x.fields.filter((f) => V(f.key)); if (!fs.length) return; b += `\n■ ${x.s.name}(${x.rate}%)\n`; fs.forEach((f) => { b += `・${f.label}\n${V(f.key)}\n`; }); });
+  b += surveyText();
   const MAX = MAXLEN || 5500; if (b.length > MAX) b = b.slice(0, MAX) + '\n…(長いため途中まで。続きはPDFを添付します)';
   return b + '\n\n— CBO育成講座ふりかえり/提出シート https://tokyobranding.org/cbo-taiken-lab/';
 }
@@ -567,7 +599,7 @@ async function autoSend() {
   set('講師(' + SUBMIT_TO + ')に送信しています…');
   try {
     const nm = V('in_name') || V('ch4_name').split('\n')[0] || '';
-    const fd = new URLSearchParams({ 'entry.1700236277': nm, 'entry.942644710': S.submittedAt || '', 'entry.2008958827': stats().rate + '%', 'entry.466771584': mailSubject() + '\n\n' + mailBodyFull() });
+    const fd = new URLSearchParams({ 'entry.1700236277': nm, 'entry.942644710': S.submittedAt || '', 'entry.2008958827': stats().rate + '%', 'entry.466771584': mailSubject() + '\n\n' + mailBodyFull(), 'entry.1011724969': satText(), 'entry.225375565': (S.vals.sv_change || '').trim(), 'entry.167788622': (S.vals.sv_improve || '').trim(), 'entry.1389583091': S.vals.sv_case || '', 'entry.648924836': (S.vals.sv_learn || '').trim() });
     await fetch(GFORM, { method: 'POST', mode: 'no-cors', body: fd });
     S.sentAt = S.submittedAt; persist(); set('講師に送信しました(' + S.submittedAt + ')。書き足したら、もう一度送信してください。', true);
   } catch (err) {
