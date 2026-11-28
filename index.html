@@ -111,6 +111,16 @@ legend.dk{background:#1F1B16;color:#F6F2EA;padding:6px 10px;border:0}
 .bm>.ws-chip,.bm>.sp{grid-row:span 1}.bm>.bm-side{grid-row:span 2}
 .gj-5w>div{display:grid;grid-row:span 3;grid-template-rows:subgrid;gap:6px}
 .gj-5w>div>.fld{display:contents}.gj-5w .fld>span{min-height:0!important;align-self:end}.gj-5w textarea{align-self:stretch;height:auto}
+.fw-al{row-gap:6px!important}
+.fw-sub{display:grid!important;grid-template-rows:subgrid;row-gap:6px;gap:6px 0}
+.fw-sub>.fld{display:contents}
+.fw-sub .fld>span{align-self:end;margin-top:14px}
+.fw-sub .fld>textarea{align-self:stretch;height:auto}
+.fw-qc.fw-sub .fld>span{display:none}
+.fw-qc.fw-sub .fw-q{align-self:end;margin-top:14px;min-height:0;padding:8px 18px}
+.fw-out.fw-sub .fld>span{align-self:end;justify-self:start}
+.fw-nodew{display:flex;align-items:center}.fw-nodew>.fw-node{flex:1;align-self:center}
+.fw-al .fw-ar{margin-top:0;align-self:center}
 /* worksheet layouts */
 .ws-bar{background:#1F1B16;color:#F6F2EA;font-size:13px;font-weight:700;padding:6px 10px;text-align:center}
 .ws .fld span{min-height:0}.ws .fld{height:auto}.ws .fld textarea{margin-top:0}
@@ -190,7 +200,7 @@ legend.dk{background:#1F1B16;color:#F6F2EA;padding:6px 10px;border:0}
 .fw-qc{display:flex;flex-direction:column;gap:6px;align-self:start}.fw-qc .fld>span{display:none}.fw-qc .fw-q{min-height:48px;align-self:stretch}
 .fw-out .fld>span{display:inline-block;align-self:flex-start;font-size:13px;font-weight:900;color:#1F1B16;border:2px solid #1F1B16;border-radius:8px;padding:2px 10px;margin-bottom:2px}
 .fw .fld{height:auto}.fw .fld textarea{margin-top:0}
-@media(max-width:760px){.fw-cols{grid-template-columns:1fr}.fw-ar,.fw-colh{display:none}.fw-node.mk{flex-direction:row;gap:4px}.fw-node.mk br{display:none}.fw-in,.fw-out{padding:0}.fw-q{clip-path:none;justify-content:flex-start}.fw-node{justify-content:flex-start}}
+@media(max-width:760px){.fw-cols{grid-template-columns:1fr}.fw-al>*{grid-column:1!important;grid-row:auto!important}.fw-nodew>.fw-node{flex:0 1 auto}.fw-sub{grid-template-rows:none!important}.fw-ar,.fw-colh{display:none}.fw-node.mk{flex-direction:row;gap:4px}.fw-node.mk br{display:none}.fw-in,.fw-out{padding:0}.fw-q{clip-path:none;justify-content:flex-start}.fw-node{justify-content:flex-start}}
 .howto{width:100%;aspect-ratio:16/9;background:#1F1B16;display:block;border:1px solid #1F1B16}
 .steps{margin:0;padding-left:1.4em;font-size:14px;line-height:1.8}
 .rows{border-top:1px solid #D6CCBB}
@@ -389,14 +399,21 @@ function afterFW() {
   const all = {}; SHEETS.ch4.forEach((g) => g.fields.forEach((f) => { all[f.key] = f; }));
   const L = (k, label) => fldHTML({ ...all[k], label: label || all[k].label });
   const nm = (S.vals.ch4_name || '').trim().split('\n')[0];
-  const row = (node, inner, q, out) => `${node}<div class="fw-ar" aria-hidden="true"></div><div class="fw-in">${inner}</div><div class="fw-qc"><div class="fw-q">${q[0]}</div>${fldHTML({ ...all[q[1]], label: '' })}</div><div class="fw-out">${out}</div>`;
+  let r = 2;
+  const row = (node, ins, q, out) => {
+    const n = ins.length * 2, g = (c, span, cls, html, st) => `<div class="${cls}" style="grid-column:${c};grid-row:${r} / span ${span};${st || ''}">${html}</div>`;
+    r++; const h0 = g(1, 1, 'fw-nodew', node) + g(2, 1, 'fw-ar', '', ''); r--;
+    const h = h0 + g(3, n, 'fw-in fw-sub', ins.map(([k, l]) => L(k, l)).join('')) + g(4, 2, 'fw-qc fw-sub', `<div class="fw-q">${q[0]}</div>${fldHTML({ ...all[q[1]], label: '' })}`) + g(5, 2, 'fw-out fw-sub', L(out[0], out[1]));
+    r += n; return h;
+  };
+  const body = row(`<div class="fw-node">${nm ? esc(nm) : '名前'}</div>`, [['ch4_artist', 'アーティスト:自分が大事にしたい思想']], ['自分の世界観を<br>深める/伝える', 'ch4_q_world'], ['ch4_p_world', 'to 世界問題'])
+    + row('<div class="fw-node blk">法人化</div>', [['ch4_corp', '法人:法人名/個人事業主名/法人名の仮']], ['なぜ社会に<br>存在するか', 'ch4_q_soc'], ['ch4_p_soc', 'to 社会問題'])
+    + row('<div class="fw-node mk">市場<br>to B</div>', [['hw_b1', '事業① ／ サービス'], ['hw_b2', '事業② ／ サービス']], ['中長期の<br>ビジネスパートナー<br>になれるか', 'ch4_q_b'], ['ch4_p_b', 'to B 問題'])
+    + row('<div class="fw-node mk">事業③<br>to C</div>', [['hw_c', '事業③ to C ／ サービス']], ['どんな課題の時<br>相談できるか', 'ch4_q_c'], ['ch4_p_c', 'to C 課題']);
   return `<div class="fw"><div class="fw-h">After(ライスワークとライフワークの区別がつけられる)</div>
-  <div class="fw-cols">
-    <div class="fw-colh x"></div><div class="fw-colh x"></div><div class="fw-colh">書く</div><div class="fw-colh x" style="text-align:center">問い</div><div class="fw-colh" style="padding-left:12px">誰の、どんな問題を解決するか</div>
-    ${row(`<div class="fw-node">${nm ? esc(nm) : '名前'}</div>`, L('ch4_artist', 'アーティスト:自分が大事にしたい思想'), ['自分の世界観を<br>深める/伝える', 'ch4_q_world'], L('ch4_p_world', 'to 世界問題'))}
-    ${row('<div class="fw-node blk">法人化</div>', L('ch4_corp', '法人:法人名/個人事業主名/法人名の仮'), ['なぜ社会に<br>存在するか', 'ch4_q_soc'], L('ch4_p_soc', 'to 社会問題'))}
-    ${row('<div class="fw-node mk">市場<br>to B</div>', L('hw_b1', '事業① ／ サービス') + L('hw_b2', '事業② ／ サービス'), ['中長期の<br>ビジネスパートナー<br>になれるか', 'ch4_q_b'], L('ch4_p_b', 'to B 問題'))}
-    ${row('<div class="fw-node mk">事業③<br>to C</div>', L('hw_c', '事業③ to C ／ サービス'), ['どんな課題の時<br>相談できるか', 'ch4_q_c'], L('ch4_p_c', 'to C 課題'))}
+  <div class="fw-cols fw-al">
+    <div class="fw-colh" style="grid-column:3;grid-row:1">書く</div><div class="fw-colh" style="grid-column:4;grid-row:1;text-align:center">問い</div><div class="fw-colh" style="grid-column:5;grid-row:1;padding-left:12px">誰の、どんな問題を解決するか</div>
+    ${body}
   </div></div>`;
 }
 function fieldsHTML(id) {
