@@ -98,7 +98,7 @@ legend.dk{background:#1F1B16;color:#F6F2EA;padding:6px 10px;border:0}
 .fgrid{display:grid;gap:8px}
 .fld{display:flex;flex-direction:column;gap:4px;height:100%}
 .fld span{font-size:11px;font-weight:700;line-height:1.4;min-height:2.8em}
-.fld textarea{width:100%;margin-top:auto;resize:vertical;border:1px solid #B0A797;border-radius:2px;background:#F6F2EA;padding:6px 8px;font:400 13px/1.5 'Noto Sans JP',sans-serif;color:#1F1B16}
+.fld textarea{width:100%;margin-top:auto;resize:none;overflow:hidden;border:1px solid #B0A797;border-radius:2px;background:#F6F2EA;padding:6px 8px;font:400 13px/1.5 'Noto Sans JP',sans-serif;color:#1F1B16}
 .fld textarea.filled{border-color:#1F1B16;background:#fff}
 .howto{width:100%;aspect-ratio:16/9;background:#1F1B16;display:block;border:1px solid #1F1B16}
 .steps{margin:0;padding-left:1.4em;font-size:14px;line-height:1.8}
@@ -248,7 +248,7 @@ function railHTML(x) {
   <span style="display:flex;flex-direction:column;margin-top:20px"><span class="muted" style="font-size:14px">入力率</span><span class="rate">${x.rate}%</span><span class="muted" style="font-size:12px">${x.filled} / ${x.all} 項目</span></span></div>`;
 }
 function fieldsHTML(id) {
-  return SHEETS[id].map((g) => `<fieldset><legend class="${g.dark ? 'dk' : ''}">${esc(g.title)}</legend><div class="fgrid" style="grid-template-columns:repeat(${g.cols},minmax(0,1fr))">${g.fields.map((f) => { const v = S.vals[f.key] || ''; return `<label class="fld"><span>${esc(f.label)}</span><textarea data-k="${f.key}" placeholder="${esc(f.ph)}" style="height:${f.rows * 20 + 18}px" class="${v.trim() ? 'filled' : ''}">${esc(v)}</textarea></label>`; }).join('')}</div></fieldset>`).join('');
+  return SHEETS[id].map((g) => `<fieldset><legend class="${g.dark ? 'dk' : ''}">${esc(g.title)}</legend><div class="fgrid" style="grid-template-columns:repeat(${g.cols},minmax(0,1fr))">${g.fields.map((f) => { const v = S.vals[f.key] || ''; return `<label class="fld"><span>${esc(f.label)}</span><textarea data-k="${f.key}" placeholder="${esc(f.ph)}" style="min-height:${f.rows * 20 + 18}px" class="${v.trim() ? 'filled' : ''}">${esc(v)}</textarea></label>`; }).join('')}</div></fieldset>`).join('');
 }
 function centerHTML(x) {
   const s = x.s, t = S.tab[s.id] || 'img';
@@ -347,9 +347,15 @@ document.addEventListener('click', async (e) => {
     } catch (err) { msg.textContent = 'PDFを保存できませんでした'; }
   }
 });
+
+function fitTA(el) { el.style.height = 'auto'; el.style.height = (el.scrollHeight + 2) + 'px'; }
+function fitAll(root) { (root || document).querySelectorAll('.fld textarea').forEach(fitTA); }
+new MutationObserver((ms) => { for (const m of ms) for (const n of m.addedNodes) if (n.nodeType === 1) fitAll(n.matches && n.matches('.fld textarea') ? n.parentNode : n); }).observe(document.body, { childList: true, subtree: true });
+window.addEventListener('resize', () => fitAll());
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => fitAll());
 document.addEventListener('input', (e) => {
   const k = e.target.dataset && e.target.dataset.k; if (!k) return;
-  S.vals[k] = e.target.value; e.target.classList.toggle('filled', !!e.target.value.trim()); persist(); refresh();
+  S.vals[k] = e.target.value; fitTA(e.target); e.target.classList.toggle('filled', !!e.target.value.trim()); persist(); refresh();
 });
 
 let ticking = false;
