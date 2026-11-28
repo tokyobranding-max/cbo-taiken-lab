@@ -537,8 +537,7 @@ function rerenderCenter(id) {
 // 期ごとの年度・修了日。新しい期はここに追加する(年度は4月始まり)。
 const COHORTS = {
   18: { fy: 2026, wareki: '令和8年度', courses: {
-    A: { label: 'Aコース(DAY1 11/14・DAY2 11/28)', done: [2026, 11, 28] },
-    B: { label: 'Bコース(DAY1 11/21・DAY2 12/5)', done: [2026, 12, 5] } } }
+    N: { label: '通常コース', done: [2026, 12, 5] } } }
 };
 const ORD = (n) => { const v = n % 100; return n + ((v >= 11 && v <= 13) ? 'th' : ({ 1: 'st', 2: 'nd', 3: 'rd' }[n % 10] || 'th')); };
 const MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -566,17 +565,18 @@ function certDocHTML(c) {
   <p class="sg R">${P}</p><p class="sn R">${P}</p><p class="rl R">FACULTY PRESIDENT</p></div>`;
 }
 function certHTML() {
-  const c = S.cert || (S.cert = { name: V('ch4_name') ? V('ch4_name').split('\n')[0] : (V('in_name') || ''), first: '', last: '', cohort: '18', course: '' });
+  const c = S.cert || (S.cert = { name: V('ch4_name') ? V('ch4_name').split('\n')[0] : (V('in_name') || ''), first: '', last: '', cohort: '18', course: 'N' });
+  if (COHORTS[c.cohort] && !COHORTS[c.cohort].courses[c.course]) c.course = Object.keys(COHORTS[c.cohort].courses)[0];
   if (c.romaji && !c.first && !c.last) { const p = c.romaji.trim().split(/\s+/); c.first = p[0] || ''; c.last = p.slice(1).join(' '); delete c.romaji; }
   const err = c.tried ? certCheck(c) : [];
   return `<section class="cert-sec" id="cert-sec" aria-labelledby="certTitle"><span class="lbl">提出のあと</span><h2 id="certTitle">卒業証書を発行する</h2>
   <p class="muted" style="font-size:14px;margin:0">お名前・ローマ字(ファーストネーム／セカンドネーム)・参加期を入れて「発行する」を押すと、卒業証書をPDFと画像で保存できます。証書の年度と修了日は、選んだ期とコースから自動で入ります。</p>
   <div class="cert-form">
     <label>お名前(漢字)<input id="cert_name" autocomplete="name" value="${esc(c.name)}" placeholder="例: 近池 秀夫"><small>ファイル名と記録に使います</small></label>
-    <label>ファーストネーム(名・ローマ字)<input id="cert_first" autocomplete="given-name" inputmode="latin" lang="en" value="${esc(c.first)}" placeholder="例: Ikuo"><small>頭文字だけ大文字で入ります</small></label>
-    <label>セカンドネーム(姓・ローマ字)<input id="cert_last" autocomplete="family-name" inputmode="latin" lang="en" value="${esc(c.last)}" placeholder="例: Kikuchi"><small>頭文字だけ大文字で入ります</small></label>
+    <label>ファーストネーム<input id="cert_first" autocomplete="given-name" inputmode="latin" lang="en" value="${esc(c.first)}" placeholder="例: Ikuo"><small>頭文字だけ大文字で入ります</small></label>
+    <label>セカンドネーム<input id="cert_last" autocomplete="family-name" inputmode="latin" lang="en" value="${esc(c.last)}" placeholder="例: Kikuchi"><small>頭文字だけ大文字で入ります</small></label>
     <label>参加期<select id="cert_cohort">${Object.keys(COHORTS).map((k) => `<option value="${k}" ${String(c.cohort) === k ? 'selected' : ''}>第${k}期(${COHORTS[k].fy}年度)</option>`).join('')}</select><small>現在発行できるのは第18期です</small></label>
-    <label>コース<select id="cert_course"><option value="">選んでください</option>${COHORTS[c.cohort] ? Object.entries(COHORTS[c.cohort].courses).map(([k, v]) => `<option value="${k}" ${c.course === k ? 'selected' : ''}>${esc(v.label)}</option>`).join('') : ''}</select><small>修了日(DAY2の日付)が変わります</small></label>
+    <label>コース<select id="cert_course">${COHORTS[c.cohort] ? Object.entries(COHORTS[c.cohort].courses).map(([k, v]) => `<option value="${k}" ${c.course === k ? 'selected' : ''}>${esc(v.label)}</option>`).join('') : ''}</select><small>現在は通常コースのみです</small></label>
   </div>
   <div class="cert-err" id="certErr" role="alert">${err.map(esc).join(' ／ ')}</div>
   <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><button class="dark" id="certIssue">発行する(PDF)</button><button class="light" id="certPng">画像で保存(PNG)</button><span id="certMsg" class="muted" style="font-size:13px" aria-live="polite"></span></div>
